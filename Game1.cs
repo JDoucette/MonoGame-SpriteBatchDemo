@@ -135,7 +135,11 @@ namespace SpriteBatchDemo
 				for (int x = 0; x < sizeSpriteArray.X; x++)
 				{
 					Vector2 pos = new Vector2(x * textSprite.Width, y * textSprite.Height);
-					spriteBatch.Draw(textSprite, pos, Color.White);
+					Color color = new Color(
+						(byte)(128 + x * 82 + y * 104),
+						(byte)(192 + x * 135 + y * 72),
+						(byte)(64 + x * 93 + y * 59));
+					spriteBatch.Draw(textSprite, pos, color);
 				}
 			spriteBatch.End();
 		}
