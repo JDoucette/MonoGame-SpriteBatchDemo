@@ -19,6 +19,7 @@ namespace SpriteBatchDemo
 	{
 		// ---- constants
 
+		private Point sizeScreen = new Point(1024, 768);
 		private Point size = new Point(32, 32);
 
 
@@ -34,6 +35,8 @@ namespace SpriteBatchDemo
 		public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
+			graphics.PreferredBackBufferWidth = sizeScreen.X;
+			graphics.PreferredBackBufferHeight = sizeScreen.Y;
 			Content.RootDirectory = "Content";
 		}
 
