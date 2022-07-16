@@ -51,16 +51,14 @@ namespace SpriteBatchDemo
 			for (int yTile = 0; yTile < sizeSpriteSheet_tiles.Y; yTile++)
 				for (int xTile = 0; xTile < sizeSpriteSheet_tiles.X; xTile++)
 				{
-					Color colorTile = new Color(
+					Color colorTileEdge = new Color(
 						64 + rng.Next(192),
 						64 + rng.Next(192),
 						64 + rng.Next(192));
-					Color colorTile2 = new Color(
+					Color colorTileChecker = new Color(
 						64 + rng.Next(64),
 						64 + rng.Next(64),
 						64 + rng.Next(64));
-					colorTile = new Color(255, 0, 0, 255);
-					colorTile2 = new Color(0, 0, 255, 255);
 					Point spriteTopLeft = new Point(
 						xTile * sizeTile_pixels.X, 
 						yTile * sizeTile_pixels.Y);
@@ -77,10 +75,8 @@ namespace SpriteBatchDemo
 							int indexPixelColor = (pixel.Y * sizeSpriteTexture.X) + pixel.X;
 							colors[indexPixelColor] =
 								(edge
-									? colorTile
-									: (parity
-										? colorTile2
-										: Color.Black));
+									? colorTileEdge
+									: (parity ? colorTileChecker : Color.Black));
 						}
 				}
 

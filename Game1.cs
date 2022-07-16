@@ -85,7 +85,8 @@ namespace SpriteBatchDemo
 
 		protected override void Update(GameTime gameTime)
 		{
-			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || 
+				Keyboard.GetState().IsKeyDown(Keys.Escape))
 				Exit();
 
 			base.Update(gameTime);
@@ -111,7 +112,14 @@ namespace SpriteBatchDemo
 			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
 
 			GraphicsDevice.SetRenderTarget((RenderTarget2D)textGame);
-			GraphicsDevice.Clear(Color.Black);
+			GraphicsDevice.Clear(Color.CornflowerBlue);
+
+			spriteBatch.Begin();
+			spriteBatch.Draw(textWhite, new Rectangle(0, 0, 16, 16), Color.White);
+			spriteBatch.Draw(textWhite, new Rectangle(0, 16, 16, 16), new Color(255, 0, 0));
+			spriteBatch.Draw(textWhite, new Rectangle(0, 32, 16, 16), new Color(0, 255, 0));
+			spriteBatch.Draw(textWhite, new Rectangle(0, 48, 16, 16), new Color(0, 0, 255));
+			spriteBatch.End();
 
 			////float scale = 1.0f;
 			//float rotation = 0.0f;
@@ -156,12 +164,10 @@ namespace SpriteBatchDemo
 			for (int y = 0; y < sizeSpriteArray.Y; y++)
 				for (int x = 0; x < sizeSpriteArray.X; x++)
 				{
-					Vector2 pos = new Vector2(x * textSprite.Width, y * textSprite.Height);
-					Color color = new Color(
-						(byte)(128 + x * 82 + y * 104),
-						(byte)(192 + x * 135 + y * 72),
-						(byte)(64 + x * 93 + y * 59));
-					spriteBatch.Draw(textSprite, pos, color);
+					Vector2 pos = new Vector2(
+						x * textSprite.Width + 16, 
+						y * textSprite.Height);
+					spriteBatch.Draw(textSprite, pos, Color.White);
 				}
 			spriteBatch.End();
 		}
