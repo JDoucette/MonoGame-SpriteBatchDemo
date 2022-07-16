@@ -20,8 +20,8 @@ namespace SpriteBatchDemo
 	{
 		// ---- constants
 
-		private Point sizeResScreen = new Point(1920 - 256, 1080 - 256);
 		private Point sizeResGame = new Point(256, 192);
+		private Point sizeResScreen = new Point(1920 - 256, 1080 - 256);
 		private Point sizeTexture = new Point(32, 32);
 
 
@@ -110,17 +110,29 @@ namespace SpriteBatchDemo
 
 			//float scale = 1.0f;
 			float rotation = 0.0f;
-			float scale = (float)(2.0 + Math.Sin(timeTotal * 1.0));
+			float scale = (float)(2.0 + Math.Sin(timeTotal * 0.5));
 			//float rotation = (float)(timeTotal * 0.1);
 
+			//Matrix transformMatrix =
+			//	//Matrix.CreateTranslation(new Vector3(0, 0, 0)) *
+			//	//Matrix.CreateRotationX(rotation) *
+			//	//Matrix.CreateRotationY(rotation) *
+			//	Matrix.CreateRotationZ(rotation) *
+			//	Matrix.CreateScale(scale)
+			//	//Matrix.CreateTranslation(new Vector3(0, 0, 0))
+			//	;
+
+			// Kris Steele:
+			Vector2 DrawPosition = new Vector2(sizeResGame.X / 3, sizeResGame.Y / 3);
+			float Rotation = 0.0f;
+			float Zoom = (float)(2.0 + Math.Sin(timeTotal * 1.0));
+			float ViewportWidth = GraphicsDevice.Viewport.Width;
+			float ViewportHeight = GraphicsDevice.Viewport.Height;
 			Matrix transformMatrix =
-				//Matrix.CreateTranslation(new Vector3(0, 0, 0)) *
-				//Matrix.CreateRotationX(rotation) *
-				//Matrix.CreateRotationY(rotation) *
-				Matrix.CreateRotationZ(rotation) *
-				Matrix.CreateScale(scale)
-				//Matrix.CreateTranslation(new Vector3(0, 0, 0))
-				;
+				Matrix.CreateTranslation(new Vector3((int)-DrawPosition.X, (int)-DrawPosition.Y, 0)) *
+				Matrix.CreateRotationZ(Rotation) *
+				Matrix.CreateScale(Zoom) *
+				Matrix.CreateTranslation(new Vector3(ViewportWidth * 0.5f, ViewportHeight * 0.5f, 0));
 
 			spriteBatch.Begin(
 				SpriteSortMode.Deferred,
