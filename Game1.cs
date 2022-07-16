@@ -24,16 +24,18 @@ namespace SpriteBatchDemo
 		// ---- constants
 
 		private Point sizeResGame = new Point(256, 192);
-		private Point sizeResScreen = new Point(1920 - 256, 1080 - 256);
-		private Point sizeTexture = new Point(32, 32);
+		private Point sizeResScreen = new Point(1920 - 128, 1080 - 128);
+		private Point sizeSpriteTexture = new Point(32, 32);
 
 
 		// ---- data members
 
+		private Art art;
 		private GraphicsDeviceManager graphics;
 		private SpriteBatch spriteBatch;
 		private RenderTarget2D textGame;
 		private Texture2D textSprite;
+		private Texture2D textWhite;
 
 
 		// ---- methods
@@ -50,6 +52,7 @@ namespace SpriteBatchDemo
 
 		protected override void Initialize()
 		{
+			art = new Art(GraphicsDevice);
 			textGame = new RenderTarget2D(GraphicsDevice, sizeResGame.X, sizeResGame.Y, mipMap: false, SurfaceFormat.Color, DepthFormat.None);
 			base.Initialize();
 		}
@@ -58,26 +61,8 @@ namespace SpriteBatchDemo
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			textSprite = CreateSpriteTexture();
-		}
-
-		private Texture2D CreateSpriteTexture()
-		{
-			int numPixels = sizeTexture.X * sizeTexture.Y;
-			Color[] colors = new Color[numPixels];
-			for (int y = 0; y < sizeTexture.Y; y++)
-				for (int x = 0; x < sizeTexture.X; x++)
-				{
-					bool edge = (x == 0 || y == 0 || x == sizeTexture.X - 1 || y == sizeTexture.Y - 1);
-					int r = (edge ? 255 : 0);
-					bool parity = ((x + y) & 1) == 1;
-					int g = (parity ? 255 : 0);
-					int b = (parity ? 255 : 0);
-					colors[y * sizeTexture.X + x] = new Color(r, g, b);
-				}
-			textSprite = new Texture2D(GraphicsDevice, sizeTexture.X, sizeTexture.Y);
-			textSprite.SetData<Color>(colors);
-			return textSprite;
+			textSprite = art.CreateSpriteTexture(sizeSpriteTexture);
+			textWhite = art.CreateWhiteTexture(8);
 		}
 
 		protected override void UnloadContent()
