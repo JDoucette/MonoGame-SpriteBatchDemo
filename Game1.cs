@@ -24,7 +24,7 @@ namespace SpriteBatchDemo
 		// ---- constants
 
 		private Point sizeResGame = new Point(256, 192);
-		private Point sizeResScreen = new Point(1920 - 128, 1080 - 128);
+		private Point sizeResScreen = new Point(1920, 1080);
 		private Point sizeSpriteTexture = new Point(32, 32);
 
 
@@ -47,6 +47,11 @@ namespace SpriteBatchDemo
 				PreferredBackBufferWidth = sizeResScreen.X,
 				PreferredBackBufferHeight = sizeResScreen.Y
 			};
+			graphics.IsFullScreen = true;
+			graphics.SynchronizeWithVerticalRetrace = true;
+
+			this.IsFixedTimeStep = false;
+			this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 240.0);  // not used unless IsFixedTimeStep = true
 			Content.RootDirectory = "Content";
 		}
 
@@ -117,8 +122,10 @@ namespace SpriteBatchDemo
 			Vector2 DrawPosition = new Vector2(sizeResGame.X / 3, sizeResGame.Y / 3);
 			float Rotation = 0.0f;
 			float Zoom = (float)(2.0 + Math.Sin(timeTotal * 1.0));
-			float ViewportWidth = GraphicsDevice.Viewport.Width;
-			float ViewportHeight = GraphicsDevice.Viewport.Height;
+			//float ViewportWidth = GraphicsDevice.Viewport.Width;
+			//float ViewportHeight = GraphicsDevice.Viewport.Height;
+			float ViewportWidth = sizeResGame.X;
+			float ViewportHeight = sizeResGame.Y;
 			Matrix transformMatrix =
 				Matrix.CreateTranslation(new Vector3((int)-DrawPosition.X, (int)-DrawPosition.Y, 0)) *
 				Matrix.CreateRotationZ(Rotation) *
