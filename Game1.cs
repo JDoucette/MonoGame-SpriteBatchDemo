@@ -87,17 +87,28 @@ namespace SpriteBatchDemo
 
 		protected override void Draw(GameTime gameTime)
 		{
-			GraphicsDevice.Clear(Color.CornflowerBlue);
+			// 1. render target
 
 			GraphicsDevice.SetRenderTarget((RenderTarget2D)textGame);
+			GraphicsDevice.Clear(Color.Black);
 
 			spriteBatch.Begin();
 			spriteBatch.Draw(textSprite, new Vector2(0, 0), Color.White);
 			spriteBatch.End();
 
-			GraphicsDevice.SetRenderTarget(null);
+			// 2. back buffer
 
-			spriteBatch.Begin();
+			GraphicsDevice.SetRenderTarget(null);
+			GraphicsDevice.Clear(Color.CornflowerBlue);
+
+			spriteBatch.Begin(
+				SpriteSortMode.Deferred, 
+				BlendState.AlphaBlend, 
+				SamplerState.PointWrap, 
+				DepthStencilState.None, 
+				RasterizerState.CullNone, 
+				effect: null, 
+				transformMatrix: null);
 			Vector2 pos = new Vector2(0, 0);
 			float rotation = 0.0f;
 			float scale = 8.0f;
