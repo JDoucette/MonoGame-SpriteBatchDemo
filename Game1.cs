@@ -6,6 +6,7 @@
 // also with transforms, and to see if it works or ruins neares neighbour.
 // And also using sprite sheets, to see if it changes things.
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -107,9 +108,10 @@ namespace SpriteBatchDemo
 			GraphicsDevice.SetRenderTarget((RenderTarget2D)textGame);
 			GraphicsDevice.Clear(Color.Black);
 
-			float scale = 1.0f;
-			//float rotation = 0.0f;
-			float rotation = (float)(timeTotal * 0.1);
+			//float scale = 1.0f;
+			float rotation = 0.0f;
+			float scale = (float)(2.0 + Math.Sin(timeTotal * 1.0));
+			//float rotation = (float)(timeTotal * 0.1);
 
 			Matrix transformMatrix =
 				//Matrix.CreateTranslation(new Vector3(0, 0, 0)) *
