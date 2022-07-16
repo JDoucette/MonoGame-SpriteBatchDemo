@@ -115,26 +115,16 @@ namespace SpriteBatchDemo
 
 		private void Render_LowResGameScreen(GameTime gameTime)
 		{
-			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
-
 			GraphicsDevice.SetRenderTarget((RenderTarget2D)textGame);
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
-			spriteBatch.Begin();
-			// show off the primary colors
-			spriteBatch.Draw(textWhite, new Rectangle(0, 0, 16, 16), Color.White);
-			spriteBatch.Draw(textWhite, new Rectangle(0, 16, 16, 16), new Color(255, 0, 0));
-			spriteBatch.Draw(textWhite, new Rectangle(0, 32, 16, 16), new Color(0, 255, 0));
-			spriteBatch.Draw(textWhite, new Rectangle(0, 48, 16, 16), new Color(0, 0, 255));
-			// random 1x1 dots, to show the pixel size of the low resolution screen
-			Random rng = new Random(0);
-			for (int i = 0; i < 4096; i++)
-				spriteBatch.Draw(
-					textWhite, 
-					new Rectangle(rng.Next(sizeResGame.X), rng.Next(sizeResScreen.Y), 1, 1), 
-					new Color(rng.Next(256), rng.Next(256), rng.Next(256)));
-			spriteBatch.End();
+			Render_LowResGameScreen_Backdrop();
+			Render_LowResGameScreen_Foreground(gameTime);
+		}
 
+		private void Render_LowResGameScreen_Foreground(GameTime gameTime)
+		{
+			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
 
 			////float scale = 1.0f;
 			//float rotation = 0.0f;
@@ -152,7 +142,7 @@ namespace SpriteBatchDemo
 
 			// exact copy of Kris Steele's transform matrix for PK, with changes to screen size & draw position:
 			Vector2 DrawPosition = new Vector2(
-				sizeResGame.X * 0.125f, 
+				sizeResGame.X * 0.125f,
 				sizeResGame.Y * 0.125f);
 			float Rotation = 0.0f;
 			float Zoom = (float)(2.0 + Math.Sin(timeTotal * 0.5));
@@ -180,10 +170,28 @@ namespace SpriteBatchDemo
 				for (int x = 0; x < sizeSpriteArray.X; x++)
 				{
 					Vector2 pos = new Vector2(
-						x * textSprite.Width + 16, 
+						x * textSprite.Width + 16,
 						y * textSprite.Height);
 					spriteBatch.Draw(textSprite, pos, Color.White);
 				}
+			spriteBatch.End();
+		}
+
+		private void Render_LowResGameScreen_Backdrop()
+		{
+			spriteBatch.Begin();
+			// show off the primary colors
+			spriteBatch.Draw(textWhite, new Rectangle(0, 0, 16, 16), Color.White);
+			spriteBatch.Draw(textWhite, new Rectangle(0, 16, 16, 16), new Color(255, 0, 0));
+			spriteBatch.Draw(textWhite, new Rectangle(0, 32, 16, 16), new Color(0, 255, 0));
+			spriteBatch.Draw(textWhite, new Rectangle(0, 48, 16, 16), new Color(0, 0, 255));
+			// random 1x1 dots, to show the pixel size of the low resolution screen
+			Random rng = new Random(0);
+			for (int i = 0; i < 4096; i++)
+				spriteBatch.Draw(
+					textWhite,
+					new Rectangle(rng.Next(sizeResGame.X), rng.Next(sizeResScreen.Y), 1, 1),
+					new Color(rng.Next(256), rng.Next(256), rng.Next(256)));
 			spriteBatch.End();
 		}
 
