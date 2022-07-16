@@ -24,8 +24,13 @@ namespace SpriteBatchDemo
 		// ---- constants
 
 		private Point sizeResGame = new Point(256, 192);
+#if DEBUG
+		private Point sizeResScreen = new Point(1280, 720);
+#else
 		private Point sizeResScreen = new Point(1920, 1080);
-		private Point sizeSpriteTexture = new Point(32, 32);
+#endif
+		private Point sizeTile_pixels = new Point(16, 16);
+		private Point sizeSpriteSheet_tiles = new Point(8, 8);
 
 
 		// ---- data members
@@ -47,7 +52,11 @@ namespace SpriteBatchDemo
 				PreferredBackBufferWidth = sizeResScreen.X,
 				PreferredBackBufferHeight = sizeResScreen.Y
 			};
+#if DEBUG
+			graphics.IsFullScreen = false;
+#else
 			graphics.IsFullScreen = true;
+#endif
 			graphics.SynchronizeWithVerticalRetrace = true;
 
 			this.IsFixedTimeStep = false;
@@ -66,7 +75,7 @@ namespace SpriteBatchDemo
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			textSprite = art.CreateSpriteTexture(sizeSpriteTexture);
+			textSprite = art.CreateSpriteSheetTexture(sizeTile_pixels, sizeSpriteSheet_tiles);
 			textWhite = art.CreateWhiteTexture(8);
 		}
 
@@ -86,18 +95,18 @@ namespace SpriteBatchDemo
 		{
 			// 1. render target
 
-			RenderLowResGameScreen(gameTime);
+			Render_LowResGameScreen(gameTime);
 
 			// 2. back buffer
 
-			RenderGameScreen_to_BackBuffer();
+			Render_LowResGameScreen_to_BackBuffer();
 
 			// 3. base class
 
 			base.Draw(gameTime);
 		}
 
-		private void RenderLowResGameScreen(GameTime gameTime)
+		private void Render_LowResGameScreen(GameTime gameTime)
 		{
 			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
 
@@ -118,10 +127,12 @@ namespace SpriteBatchDemo
 			//	//Matrix.CreateTranslation(new Vector3(0, 0, 0))
 			//	;
 
-			// Kris Steele:
-			Vector2 DrawPosition = new Vector2(sizeResGame.X / 3, sizeResGame.Y / 3);
+			// exact copy of Kris Steele's transform matrix for PK, with changes to screen size & draw position:
+			Vector2 DrawPosition = new Vector2(
+				sizeResGame.X * 0.125f, 
+				sizeResGame.Y * 0.125f);
 			float Rotation = 0.0f;
-			float Zoom = (float)(2.0 + Math.Sin(timeTotal * 1.0));
+			float Zoom = (float)(2.0 + Math.Sin(timeTotal * 0.5));
 			//float ViewportWidth = GraphicsDevice.Viewport.Width;
 			//float ViewportHeight = GraphicsDevice.Viewport.Height;
 			float ViewportWidth = sizeResGame.X;
@@ -139,10 +150,9 @@ namespace SpriteBatchDemo
 				DepthStencilState.None,
 				RasterizerState.CullNone,
 				effect: null,
-				transformMatrix: transformMatrix
-				//transformMatrix: null
-				);
-			Point sizeSpriteArray = new Point(4, 4);
+				transformMatrix);
+
+			Point sizeSpriteArray = new Point(1, 1);
 			for (int y = 0; y < sizeSpriteArray.Y; y++)
 				for (int x = 0; x < sizeSpriteArray.X; x++)
 				{
@@ -156,7 +166,7 @@ namespace SpriteBatchDemo
 			spriteBatch.End();
 		}
 
-		private void RenderGameScreen_to_BackBuffer()
+		private void Render_LowResGameScreen_to_BackBuffer()
 		{
 			GraphicsDevice.SetRenderTarget(null);
 			GraphicsDevice.Clear(Color.CornflowerBlue);
