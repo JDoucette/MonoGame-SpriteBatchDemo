@@ -87,9 +87,22 @@ namespace SpriteBatchDemo
 
 		protected override void Draw(GameTime gameTime)
 		{
-			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
-
 			// 1. render target
+
+			RenderLowResGameScreen(gameTime);
+
+			// 2. back buffer
+
+			RenderGameScreen_to_BackBuffer();
+
+			// 3. base class
+
+			base.Draw(gameTime);
+		}
+
+		private void RenderLowResGameScreen(GameTime gameTime)
+		{
+			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
 
 			GraphicsDevice.SetRenderTarget((RenderTarget2D)textGame);
 			GraphicsDevice.Clear(Color.Black);
@@ -117,11 +130,18 @@ namespace SpriteBatchDemo
 				transformMatrix: transformMatrix
 				//transformMatrix: null
 				);
-			spriteBatch.Draw(textSprite, new Vector2(0, 0), Color.White);
+			Point sizeSpriteArray = new Point(4, 4);
+			for (int y = 0; y < sizeSpriteArray.Y; y++)
+				for (int x = 0; x < sizeSpriteArray.X; x++)
+				{
+					Vector2 pos = new Vector2(x * textSprite.Width, y * textSprite.Height);
+					spriteBatch.Draw(textSprite, pos, Color.White);
+				}
 			spriteBatch.End();
+		}
 
-			// 2. back buffer
-
+		private void RenderGameScreen_to_BackBuffer()
+		{
 			GraphicsDevice.SetRenderTarget(null);
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -136,7 +156,7 @@ namespace SpriteBatchDemo
 			float scaleGame = 8.0f;
 			spriteBatch.Draw(
 				textGame,
-				position: new Vector2(0, 0),
+				position: Vector2.Zero,
 				sourceRectangle: null,
 				Color.White,
 				rotation: 0.0f,
@@ -145,8 +165,8 @@ namespace SpriteBatchDemo
 				SpriteEffects.None,
 				layerDepth: 0.0f);
 			spriteBatch.End();
-
-			base.Draw(gameTime);
 		}
+
+
 	}
 }
