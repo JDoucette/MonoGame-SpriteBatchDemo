@@ -58,19 +58,22 @@ namespace SpriteBatchDemo
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			textSprite = CreateTexture();
+			textSprite = CreateSpriteTexture();
 		}
 
-		private Texture2D CreateTexture()
+		private Texture2D CreateSpriteTexture()
 		{
 			int numPixels = sizeTexture.X * sizeTexture.Y;
 			Color[] colors = new Color[numPixels];
 			for (int y = 0; y < sizeTexture.Y; y++)
 				for (int x = 0; x < sizeTexture.X; x++)
 				{
+					bool edge = (x == 0 || y == 0 || x == sizeTexture.X - 1 || y == sizeTexture.Y - 1);
+					int r = (edge ? 255 : 0);
 					bool parity = ((x + y) & 1) == 1;
-					int v = (parity ? 255 : 0);
-					colors[y * sizeTexture.X + x] = new Color(v, v, v);
+					int g = (parity ? 255 : 0);
+					int b = (parity ? 255 : 0);
+					colors[y * sizeTexture.X + x] = new Color(r, g, b);
 				}
 			textSprite = new Texture2D(GraphicsDevice, sizeTexture.X, sizeTexture.Y);
 			textSprite.SetData<Color>(colors);
