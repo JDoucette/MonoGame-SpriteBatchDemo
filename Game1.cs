@@ -19,29 +19,34 @@ namespace SpriteBatchDemo
 	{
 		// ---- constants
 
-		private Point sizeScreen = new Point(1024, 768);
-		private Point size = new Point(32, 32);
+		private Point sizeResScreen = new Point(1024, 768);
+		private Point sizeResGame = new Point(320, 240);
+		private Point sizeTexture = new Point(32, 32);
 
 
 		// ---- data members
 
 		private GraphicsDeviceManager graphics;
 		private SpriteBatch spriteBatch;
-		private Texture2D texture;
+		private RenderTarget2D textGame;
+		private Texture2D textSprite;
 
 
 		// ---- methods
 
 		public Game1()
 		{
-			graphics = new GraphicsDeviceManager(this);
-			graphics.PreferredBackBufferWidth = sizeScreen.X;
-			graphics.PreferredBackBufferHeight = sizeScreen.Y;
+			graphics = new GraphicsDeviceManager(this)
+			{
+				PreferredBackBufferWidth = sizeResScreen.X,
+				PreferredBackBufferHeight = sizeResScreen.Y
+			};
 			Content.RootDirectory = "Content";
 		}
 
 		protected override void Initialize()
 		{
+			textGame = new RenderTarget2D(GraphicsDevice, sizeResGame.X, sizeResGame.Y, mipMap: false, SurfaceFormat.Color, DepthFormat.None);
 			base.Initialize();
 		}
 
@@ -49,23 +54,23 @@ namespace SpriteBatchDemo
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			texture = CreateTexture();
+			textSprite = CreateTexture();
 		}
 
 		private Texture2D CreateTexture()
 		{
-			int numPixels = size.X * size.Y;
+			int numPixels = sizeTexture.X * sizeTexture.Y;
 			Color[] colors = new Color[numPixels];
-			for (int y = 0; y < size.Y; y++)
-				for (int x = 0; x < size.X; x++)
+			for (int y = 0; y < sizeTexture.Y; y++)
+				for (int x = 0; x < sizeTexture.X; x++)
 				{
 					bool parity = ((x + y) & 1) == 1;
 					int v = (parity ? 255 : 0);
-					colors[y * size.X + x] = new Color(v, v, v);
+					colors[y * sizeTexture.X + x] = new Color(v, v, v);
 				}
-			texture = new Texture2D(GraphicsDevice, size.X, size.Y);
-			texture.SetData<Color>(colors);
-			return texture;
+			textSprite = new Texture2D(GraphicsDevice, sizeTexture.X, sizeTexture.Y);
+			textSprite.SetData<Color>(colors);
+			return textSprite;
 		}
 
 		protected override void UnloadContent()
@@ -84,8 +89,20 @@ namespace SpriteBatchDemo
 		{
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
+			GraphicsDevice.SetRenderTarget((RenderTarget2D)textGame);
+
 			spriteBatch.Begin();
-			spriteBatch.Draw(texture, new Vector2(0, 0), Color.White);
+			spriteBatch.Draw(textSprite, new Vector2(0, 0), Color.White);
+			spriteBatch.End();
+
+			GraphicsDevice.SetRenderTarget(null);
+
+			spriteBatch.Begin();
+			Vector2 pos = new Vector2(0, 0);
+			float rotation = 0.0f;
+			float scale = 8.0f;
+			float depth = 0.0f;
+			spriteBatch.Draw(textGame, pos, null, Color.White, rotation, new Vector2(0,0), scale, SpriteEffects.None, depth);
 			spriteBatch.End();
 
 			base.Draw(gameTime);
