@@ -19,8 +19,8 @@ namespace SpriteBatchDemo
 	{
 		// ---- constants
 
-		private Point sizeResScreen = new Point(1024, 768);
-		private Point sizeResGame = new Point(320, 240);
+		private Point sizeResScreen = new Point(1920 - 256, 1080 - 256);
+		private Point sizeResGame = new Point(256, 192);
 		private Point sizeTexture = new Point(32, 32);
 
 
@@ -87,12 +87,36 @@ namespace SpriteBatchDemo
 
 		protected override void Draw(GameTime gameTime)
 		{
+			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
+
 			// 1. render target
 
 			GraphicsDevice.SetRenderTarget((RenderTarget2D)textGame);
 			GraphicsDevice.Clear(Color.Black);
 
-			spriteBatch.Begin();
+			float scale = 1.0f;
+			//float rotation = 0.0f;
+			float rotation = (float)(timeTotal * 0.1);
+
+			Matrix transformMatrix =
+				//Matrix.CreateTranslation(new Vector3(0, 0, 0)) *
+				//Matrix.CreateRotationX(rotation) *
+				//Matrix.CreateRotationY(rotation) *
+				Matrix.CreateRotationZ(rotation) *
+				Matrix.CreateScale(scale)
+				//Matrix.CreateTranslation(new Vector3(0, 0, 0))
+				;
+
+			spriteBatch.Begin(
+				SpriteSortMode.Deferred,
+				BlendState.AlphaBlend,
+				SamplerState.PointWrap,
+				DepthStencilState.None,
+				RasterizerState.CullNone,
+				effect: null,
+				transformMatrix: transformMatrix
+				//transformMatrix: null
+				);
 			spriteBatch.Draw(textSprite, new Vector2(0, 0), Color.White);
 			spriteBatch.End();
 
@@ -102,18 +126,24 @@ namespace SpriteBatchDemo
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			spriteBatch.Begin(
-				SpriteSortMode.Deferred, 
-				BlendState.AlphaBlend, 
-				SamplerState.PointWrap, 
-				DepthStencilState.None, 
-				RasterizerState.CullNone, 
-				effect: null, 
+				SpriteSortMode.Deferred,
+				BlendState.AlphaBlend,
+				SamplerState.PointWrap,
+				DepthStencilState.None,
+				RasterizerState.CullNone,
+				effect: null,
 				transformMatrix: null);
-			Vector2 pos = new Vector2(0, 0);
-			float rotation = 0.0f;
-			float scale = 8.0f;
-			float depth = 0.0f;
-			spriteBatch.Draw(textGame, pos, null, Color.White, rotation, new Vector2(0,0), scale, SpriteEffects.None, depth);
+			float scaleGame = 8.0f;
+			spriteBatch.Draw(
+				textGame,
+				position: new Vector2(0, 0),
+				sourceRectangle: null,
+				Color.White,
+				rotation: 0.0f,
+				origin: new Vector2(0, 0),
+				scale: scaleGame,
+				SpriteEffects.None,
+				layerDepth: 0.0f);
 			spriteBatch.End();
 
 			base.Draw(gameTime);
