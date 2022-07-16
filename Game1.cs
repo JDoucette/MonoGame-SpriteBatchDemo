@@ -23,12 +23,18 @@ namespace SpriteBatchDemo
 	{
 		// ---- constants
 
-		private Point sizeResGame = new Point(256, 192);
+		// resolution
 #if DEBUG
-		private Point sizeResScreen = new Point(1280, 720);
+		private static Point sizeResScreen = new Point(1280, 720);
 #else
-		private Point sizeResScreen = new Point(1920, 1080);
+		private static Point sizeResScreen = new Point(1920, 1080);
 #endif
+		private const int scaleGame = 4;
+		private Point sizeResGame = new Point(
+			sizeResScreen.X / scaleGame, 
+			sizeResScreen.Y / scaleGame);
+
+		// sprites
 		private Point sizeTile_pixels = new Point(16, 16);
 		private Point sizeSpriteSheet_tiles = new Point(8, 8);
 
@@ -115,11 +121,20 @@ namespace SpriteBatchDemo
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			spriteBatch.Begin();
+			// show off the primary colors
 			spriteBatch.Draw(textWhite, new Rectangle(0, 0, 16, 16), Color.White);
 			spriteBatch.Draw(textWhite, new Rectangle(0, 16, 16, 16), new Color(255, 0, 0));
 			spriteBatch.Draw(textWhite, new Rectangle(0, 32, 16, 16), new Color(0, 255, 0));
 			spriteBatch.Draw(textWhite, new Rectangle(0, 48, 16, 16), new Color(0, 0, 255));
+			// random 1x1 dots, to show the pixel size of the low resolution screen
+			Random rng = new Random(0);
+			for (int i = 0; i < 4096; i++)
+				spriteBatch.Draw(
+					textWhite, 
+					new Rectangle(rng.Next(sizeResGame.X), rng.Next(sizeResScreen.Y), 1, 1), 
+					new Color(rng.Next(256), rng.Next(256), rng.Next(256)));
 			spriteBatch.End();
+
 
 			////float scale = 1.0f;
 			//float rotation = 0.0f;
@@ -185,7 +200,6 @@ namespace SpriteBatchDemo
 				RasterizerState.CullNone,
 				effect: null,
 				transformMatrix: null);
-			float scaleGame = 8.0f;
 			spriteBatch.Draw(
 				textGame,
 				position: Vector2.Zero,
