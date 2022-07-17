@@ -10,15 +10,15 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Text;
 
 namespace SpriteBatchDemo
 {
-	/// <summary>
-	/// This is the main type for your game.
-	/// </summary>
 	public class Game1 : Game
 	{
 		// ---- constants
+
+		private StringBuilder strTitle = new StringBuilder("SpriteBatchDemo");
 
 		// sampler state
 		//private static SamplerState samplerState = SamplerState.PointWrap;
@@ -30,7 +30,7 @@ namespace SpriteBatchDemo
 #else
 		private static Point sizeResScreen = new Point(1920, 1080);
 #endif
-		private const int scaleGame = 6;
+		private const int scaleGame = 5;
 		private Point sizeResGame = new Point(
 			sizeResScreen.X / scaleGame, 
 			sizeResScreen.Y / scaleGame);
@@ -48,6 +48,7 @@ namespace SpriteBatchDemo
 		private RenderTarget2D textLowResGame;
 		private Texture2D textSpriteSheet;
 		private Texture2D textWhite;
+		private Font font;
 
 
 		// ---- methods
@@ -84,6 +85,8 @@ namespace SpriteBatchDemo
 
 			textSpriteSheet = art.CreateSpriteSheetTexture(sizeTile_pixels, sizeSpriteSheet_tiles);
 			textWhite = art.CreateWhiteTexture(8);
+
+			font = new Font(Content.Load<Texture2D>(@"Fonts\font-arcade-classic-7x7-jason-edit"));
 		}
 
 		protected override void UnloadContent()
@@ -111,10 +114,10 @@ namespace SpriteBatchDemo
 		private void Render_LowResGameScreen(GameTime gameTime)
 		{
 			GraphicsDevice.SetRenderTarget((RenderTarget2D)textLowResGame);
-			GraphicsDevice.Clear(Color.Black);
+			GraphicsDevice.Clear(new Color(0, 0, 0));
 
-			Render_LowResGameScreen_Backdrop();
 			Render_LowResGameScreen_Foreground(gameTime);
+			Render_LowResGameScreen_HUD();
 		}
 
 		private void Render_LowResGameScreen_Foreground(GameTime gameTime)
@@ -168,21 +171,10 @@ namespace SpriteBatchDemo
 			spriteBatch.End();
 		}
 
-		private void Render_LowResGameScreen_Backdrop()
+		private void Render_LowResGameScreen_HUD()
 		{
 			spriteBatch.Begin();
-			// show off the primary colors
-			spriteBatch.Draw(textWhite, new Rectangle(0, 0, 16, 16), Color.White);
-			spriteBatch.Draw(textWhite, new Rectangle(0, 16, 16, 16), new Color(255, 0, 0));
-			spriteBatch.Draw(textWhite, new Rectangle(0, 32, 16, 16), new Color(0, 255, 0));
-			spriteBatch.Draw(textWhite, new Rectangle(0, 48, 16, 16), new Color(0, 0, 255));
-			// random 1x1 dots, to show the pixel size of the low resolution screen
-			Random rng = new Random(0);
-			for (int i = 0; i < 1024; i++)
-				spriteBatch.Draw(
-					textWhite,
-					new Rectangle(rng.Next(sizeResGame.X), rng.Next(sizeResScreen.Y), 1, 1),
-					new Color(rng.Next(256), rng.Next(256), rng.Next(256)));
+			font.Draw(spriteBatch, strTitle, new Vector2(1, 1), Color.White);
 			spriteBatch.End();
 		}
 
@@ -212,20 +204,16 @@ namespace SpriteBatchDemo
 				SpriteEffects.None,
 				layerDepth: 0.0f);
 
+			// lower-left
 			// actual size
 			// border
-			spriteBatch.Draw(textWhite, new Rectangle(0, 0, sizeResGame.X + 2, sizeResGame.Y + 2), Color.Black);
+			spriteBatch.Draw(textWhite, 
+				new Rectangle(
+					0, sizeResScreen.Y - textLowResGame.Height - 2, 
+					sizeResGame.X + 2, sizeResGame.Y + 2), 
+				Color.Black);
 			// game screen
-			spriteBatch.Draw(
-				textLowResGame,
-				position: new Vector2(1,1),
-				sourceRectangle: null,
-				Color.White,
-				rotation: 0.0f,
-				origin: new Vector2(0, 0),
-				scale: 1.0f,
-				SpriteEffects.None,
-				layerDepth: 0.0f);
+			spriteBatch.Draw(textLowResGame, new Vector2(1, sizeResScreen.Y - textLowResGame.Height - 1), Color.White);
 
 			spriteBatch.End();
 		}
@@ -233,6 +221,8 @@ namespace SpriteBatchDemo
 		private void Render_SpriteSheet()
 		{
 			spriteBatch.Begin();
+
+			// upper-right
 
 			// border
 			spriteBatch.Draw(textWhite, 
@@ -242,9 +232,7 @@ namespace SpriteBatchDemo
 				Color.Black);
 			// sprite sheet
 			spriteBatch.Draw(textSpriteSheet, 
-				new Rectangle(
-					sizeResScreen.X - textSpriteSheet.Width - 1, 0, 
-					textSpriteSheet.Width, textSpriteSheet.Height), 
+				new Vector2(sizeResScreen.X - textSpriteSheet.Width - 1, 0), 
 				Color.White);
 
 			spriteBatch.End();
