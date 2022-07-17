@@ -23,7 +23,7 @@ namespace SpriteBatchDemo
 	{
 		// ---- constants
 
-		private readonly StringBuilder strTitle = new StringBuilder("SpriteBatchDemo");
+		private readonly StringBuilder strTitle = new StringBuilder("SpriteBatch Demo");
 		private readonly StringBuilder str = new StringBuilder(256);
 
 		// sampler state
@@ -68,14 +68,14 @@ namespace SpriteBatchDemo
 			graphics = new GraphicsDeviceManager(this)
 			{
 				PreferredBackBufferWidth = sizeResScreen.X,
-				PreferredBackBufferHeight = sizeResScreen.Y
-			};
+				PreferredBackBufferHeight = sizeResScreen.Y,
 #if DEBUG
-			graphics.IsFullScreen = false;
+				IsFullScreen = false,
 #else
-			graphics.IsFullScreen = true;
+				IsFullScreen = true,
 #endif
-			graphics.SynchronizeWithVerticalRetrace = true;
+				SynchronizeWithVerticalRetrace = true
+		};
 
 			this.IsFixedTimeStep = false;
 			this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 240.0);  // not used unless IsFixedTimeStep = true
@@ -97,8 +97,9 @@ namespace SpriteBatchDemo
 			textWhite = art.CreateWhiteTexture(8);
 
 			//font = new Font(Content.Load<Texture2D>(@"Fonts\font-arcade-classic-7x7-jason-edit"));
+			font = new Font(Content.Load<Texture2D>(@"Fonts\font-arcade-classic-7x7-bold-smb2-jason-design"));
 			//font = new Font(Content.Load<Texture2D>(@"Fonts\font-jason-5x6-fixed"));
-			font = new Font(Content.Load<Texture2D>(@"Fonts\font-jason-7x8-fixed-double-bold"));
+			//font = new Font(Content.Load<Texture2D>(@"Fonts\font-jason-7x8-fixed-double-bold"));
 		}
 
 		protected override void UnloadContent()
@@ -190,14 +191,14 @@ namespace SpriteBatchDemo
 			spriteBatch.Begin();
 			{
 				Vector2 pos = new Vector2(1, 1);
-				font.Draw(spriteBatch, strTitle, pos, Color.White);
+				font.Draw(spriteBatch, strTitle, pos, Color.PaleVioletRed);
 				pos.Y += font.FontHeight;
 
-				str.Clear().AppendFormat("Zoom: {0}", zoom);
+				str.Clear().AppendFormat("  Zoom:{0,6:F3}", zoom);
 				font.Draw(spriteBatch, str, pos, Color.White);
 				pos.Y += font.FontHeight;
 
-				str.Clear().AppendFormat("Rotate: {0}", rotate);
+				str.Clear().AppendFormat("Rotate:{0,6:F3}", rotate);
 				font.Draw(spriteBatch, str, pos, Color.White);
 				pos.Y += font.FontHeight;
 			}
