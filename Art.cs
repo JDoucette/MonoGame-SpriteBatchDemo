@@ -49,11 +49,11 @@ namespace SpriteBatchDemo
 			for (int yTile = 0; yTile < sizeSpriteSheet_tiles.Y; yTile++)
 				for (int xTile = 0; xTile < sizeSpriteSheet_tiles.X; xTile++)
 				{
-					bool parityTile = ((xTile + yTile) & 1) == 1;
+					bool invisibleTile = MathUtil.rng.NextDouble() < 0.5;
 					Color colorTileEdge = new Color(64 + MathUtil.rng.Next(192), 64 + MathUtil.rng.Next(192), 64 + MathUtil.rng.Next(192));
 					Color colorTileChecker1 = new Color(64 + MathUtil.rng.Next(64), 64 + MathUtil.rng.Next(64), 64 + MathUtil.rng.Next(64));
 					Color colorTileChecker2 = new Color(0, 0, 0);
-					if (parityTile)
+					if (invisibleTile)
 					{
 						colorTileEdge = new Color(0, 0, 0, 0);
 						colorTileChecker1 = new Color(0, 0, 0, 0);

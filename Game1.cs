@@ -28,8 +28,8 @@ namespace SpriteBatchDemo
 		// ---- constants
 
 		// speed
-		private double zoomSpeed = 0.453482658;
-		private double rotateSpeed = 0.0;  // 0.2746593
+		private readonly double zoomSpeed = 0.4534828;
+		private readonly double rotateSpeed = 0.0;  // 0.2746593;
 
 		// sampler state
 #if SETTING_POINTCLAMP
