@@ -7,9 +7,7 @@
 // And also using sprite sheets, to see if it changes things.
 //
 // TODO:
-//	1.	Try rendering without sprite sheet, where each tile is its own Texture2D.
-//		When the transform coordinates go outside of texture coordinates, it should Clamp or Wrap.
-//		Whereas with the sprite sheet, it appears neither of these prevent out-of-range, as it applies to the texture, not the sub-texture.
+//	1.	Allow keyboard control:  sample state, and spritesheet vs individual
 
 using System;
 using Microsoft.Xna.Framework;
@@ -17,6 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Text;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace SpriteBatchDemo
 {
@@ -71,9 +70,10 @@ namespace SpriteBatchDemo
 		private Art art;
 		private RenderTarget2D textLowResGame;
 		private Texture2D textSpriteSheet;
-		private Texture2D textWhite;
+		private List<Texture2D> textSpritesIndividual;
 
 		// hud
+		private Texture2D textWhite;
 		private Font font;
 
 		// tiles
@@ -129,15 +129,13 @@ namespace SpriteBatchDemo
 				sizeResGame.Y / sizeTile_pixels.Y);
 			int numTiles = sizeSpriteArray.X * sizeSpriteArray.Y;
 			tilesSpriteSheet = new Tile[numTiles];
-			tilesIndividualSprites = null;  // new Tile[numTiles];
+			tilesIndividualSprites = new Tile[numTiles];
 
 			// generate the tiles
 			int index = 0;
 			for (int y = 0; y < sizeSpriteArray.Y; y++)
 				for (int x = 0; x < sizeSpriteArray.X; x++)
 				{
-					Tile tile = new Tile();
-
 					// pick random tile from the sprite sheet
 					Point posSpriteSheet = new Point(
 						MathUtil.rng.Next(sizeSpriteSheet_tiles.X),
@@ -154,12 +152,26 @@ namespace SpriteBatchDemo
 						x * sizeTile_pixels.X,
 						y * sizeTile_pixels.Y);
 
-					tile.position = posScreen;
-					tile.rectSource = rectSource;
-					tile.texture = textSpriteSheet;
+					// 1. sprite sheet
+					Tile tile = new Tile
+					{
+						position = posScreen,
+						rectSource = rectSource,  // use a portion of the texture
+						texture = textSpriteSheet
+					};
 					Debug.Assert(tile.texture != null);  // must call this after LoadContent()
-
 					tilesSpriteSheet[index] = tile;
+
+					// 2. individual
+					tile = new Tile
+					{
+						position = posScreen,
+						rectSource = null,  // use the whole texture
+						texture = textSpritesIndividual[MathUtil.rng.Next(textSpritesIndividual.Count)]  // pick one random texture
+					};
+					Debug.Assert(tile.texture != null);  // must call this after LoadContent()
+					tilesIndividualSprites[index] = tile;
+
 					index++;
 				}
 		}
@@ -169,12 +181,16 @@ namespace SpriteBatchDemo
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
 			textSpriteSheet = art.CreateSpriteSheetTexture(sizeTile_pixels, sizeSpriteSheet_tiles);
+			textSpritesIndividual = art.CreateIndividualSprites(numSprites: 16, sizeTile_pixels);
 			textWhite = art.CreateWhiteTexture(8);
 
+			// lowercase
 			//font = new Font(Content.Load<Texture2D>(@"Fonts\font-arcade-classic-7x7-jason-edit"));
-			font = new Font(Content.Load<Texture2D>(@"Fonts\font-arcade-classic-7x7-bold-smb2-jason-design"));
+			//font = new Font(Content.Load<Texture2D>(@"Fonts\font-arcade-classic-7x7-bold-smb2-jason-design"));
+
+			// uppercase only
 			//font = new Font(Content.Load<Texture2D>(@"Fonts\font-jason-5x6-fixed"));
-			//font = new Font(Content.Load<Texture2D>(@"Fonts\font-jason-7x8-fixed-double-bold"));
+			font = new Font(Content.Load<Texture2D>(@"Fonts\font-jason-7x8-fixed-double-bold"));
 		}
 
 		protected override void UnloadContent()
@@ -232,10 +248,10 @@ namespace SpriteBatchDemo
 				transformMatrix);
 			{
 				// render all tiles
-				foreach (Tile tile in tilesSpriteSheet)
-				{
+				//foreach (Tile tile in tilesSpriteSheet)
+				//	spriteBatch.Draw(tile.texture, tile.position, tile.rectSource, Color.White);
+				foreach (Tile tile in tilesIndividualSprites)
 					spriteBatch.Draw(tile.texture, tile.position, tile.rectSource, Color.White);
-				}
 			}
 			spriteBatch.End();
 		}
