@@ -7,7 +7,11 @@
 // And also using sprite sheets, to see if it changes things.
 //
 // TODO:
-//	1.	Allow keyboard control:  sample state, and spritesheet vs individual
+//	1.	Allow keyboard control:  sample state, and spritesheet vs individual.  Show results in HUD.
+//	2.	Allow keyboard control:  zoom, rotate, and recenter
+
+#define SETTING_POINTCLAMP  // for SamplerState: if set, then PointClamp, else PointWrap
+#define USE_SPRITESHEET  // else, draw individual textures
 
 using System;
 using Microsoft.Xna.Framework;
@@ -23,12 +27,16 @@ namespace SpriteBatchDemo
 	{
 		// ---- constants
 
-		private readonly StringBuilder strTitle = new StringBuilder("SpriteBatch Demo");
-		private readonly StringBuilder str = new StringBuilder(256);
+		// speed
+		private double zoomSpeed = 0.453482658;
+		private double rotateSpeed = 0.0;  // 0.2746593
 
 		// sampler state
-		//private static SamplerState samplerState = SamplerState.PointWrap;
+#if SETTING_POINTCLAMP
 		private static readonly SamplerState samplerState = SamplerState.PointClamp;
+#else
+		private static readonly SamplerState samplerState = SamplerState.PointWrap;
+#endif
 
 		// resolution
 #if DEBUG
@@ -40,6 +48,10 @@ namespace SpriteBatchDemo
 		private Point sizeResGame = new Point(
 			sizeResScreen.X / scaleGame,
 			sizeResScreen.Y / scaleGame);
+
+		// hud
+		private readonly StringBuilder strTitle = new StringBuilder("SpriteBatch Demo");
+		private readonly StringBuilder str = new StringBuilder(256);
 
 		// sprites
 		private Point sizeTile_pixels = new Point(16, 16);  // size of each tile, in pixels
@@ -229,8 +241,8 @@ namespace SpriteBatchDemo
 			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
 
 			// exact copy of Kris Steele's transform matrix for PK, with changes to screen size & draw position:
-			rotate = 0.0f;  // (float)(timeTotal * 0.2746593);
-			zoom = (float)(3.0 + 2.0 * Math.Sin(timeTotal * 0.482658202));
+			rotate = (float)(timeTotal * rotateSpeed);
+			zoom = (float)(2.5 + 1.5 * Math.Sin(timeTotal * zoomSpeed));
 			Vector2 origin = new Vector2(sizeResGame.X * 0.5f, sizeResGame.Y * 0.5f);  // for rotation and zoom
 			Matrix transformMatrix =
 				Matrix.CreateTranslation(new Vector3(-origin, 0.0f)) *
@@ -248,10 +260,13 @@ namespace SpriteBatchDemo
 				transformMatrix);
 			{
 				// render all tiles
-				//foreach (Tile tile in tilesSpriteSheet)
-				//	spriteBatch.Draw(tile.texture, tile.position, tile.rectSource, Color.White);
+#if USE_SPRITESHEET
+				foreach (Tile tile in tilesSpriteSheet)
+					spriteBatch.Draw(tile.texture, tile.position, tile.rectSource, Color.White);
+#else
 				foreach (Tile tile in tilesIndividualSprites)
 					spriteBatch.Draw(tile.texture, tile.position, tile.rectSource, Color.White);
+#endif
 			}
 			spriteBatch.End();
 		}
