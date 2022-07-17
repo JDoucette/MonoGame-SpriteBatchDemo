@@ -38,27 +38,46 @@ namespace SpriteBatchDemo
 #endif
 		private const int scaleGame = 4;
 		private Point sizeResGame = new Point(
-			sizeResScreen.X / scaleGame, 
+			sizeResScreen.X / scaleGame,
 			sizeResScreen.Y / scaleGame);
 
 		// sprites
-		private Point sizeTile_pixels = new Point(16, 16);
-		private Point sizeSpriteSheet_tiles = new Point(8, 8);
+		private Point sizeTile_pixels = new Point(16, 16);  // size of each tile, in pixels
+		private Point sizeSpriteSheet_tiles = new Point(8, 8);  // size of the sprite sheet (a matrix of equal sized tiles), in tiles
 
 		// matrix transform
 		private float rotate;
 		private float zoom;
 
 
+		// ---- struct
+
+		private struct Tile
+		{
+			public Texture2D texture;
+			public Rectangle? rectSource;  // if null, then use the entire texture
+			public Vector2 position;
+		}
+
+
 		// ---- data members
 
-		private Art art;
+		// graphics
 		private readonly GraphicsDeviceManager graphics;
 		private SpriteBatch spriteBatch;
+
+		// texture
+		private Art art;
 		private RenderTarget2D textLowResGame;
 		private Texture2D textSpriteSheet;
 		private Texture2D textWhite;
+
+		// hud
 		private Font font;
+
+		// tiles
+		private Tile[] tilesSpriteSheet;  // 1D array is fine, since we store the position within each tile
+		private Tile[] tilesIndividualSprites;  // 1D array is fine, since we store the position within each tile
 
 
 		// ---- methods
@@ -75,7 +94,7 @@ namespace SpriteBatchDemo
 				IsFullScreen = true,
 #endif
 				SynchronizeWithVerticalRetrace = true
-		};
+			};
 
 			this.IsFixedTimeStep = false;
 			this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 240.0);  // not used unless IsFixedTimeStep = true
@@ -84,9 +103,63 @@ namespace SpriteBatchDemo
 
 		protected override void Initialize()
 		{
+			Initialize_before_LoadedContent();
+			base.Initialize();  // calls LoadContent()
+			Initialize_after_LoadedContent();
+		}
+
+		private void Initialize_after_LoadedContent()
+		{
+			GenerateTiles(ref tilesSpriteSheet, ref tilesIndividualSprites);
+		}
+
+		private void Initialize_before_LoadedContent()
+		{
 			art = new Art(GraphicsDevice);
 			textLowResGame = new RenderTarget2D(GraphicsDevice, sizeResGame.X, sizeResGame.Y, mipMap: false, SurfaceFormat.Color, DepthFormat.None);
-			base.Initialize();
+		}
+
+		private void GenerateTiles(ref Tile[] tilesSpriteSheet, ref Tile[] tilesIndividualSprites)
+		{
+			// determine number of tiles that can fit on the screen
+			// (yes, we're rounding down, but no biggie)
+			Point sizeSpriteArray = new Point(
+				sizeResGame.X / sizeTile_pixels.X,
+				sizeResGame.Y / sizeTile_pixels.Y);
+			int numTiles = sizeSpriteArray.X * sizeSpriteArray.Y;
+			tilesSpriteSheet = new Tile[numTiles];
+			tilesIndividualSprites = null;  // new Tile[numTiles];
+
+			// generate the tiles
+			int index = 0;
+			for (int y = 0; y < sizeSpriteArray.Y; y++)
+				for (int x = 0; x < sizeSpriteArray.X; x++)
+				{
+					Tile tile = new Tile();
+
+					// pick random tile from the sprite sheet
+					Point posSpriteSheet = new Point(
+						MathUtil.rng.Next(sizeSpriteSheet_tiles.X),
+						MathUtil.rng.Next(sizeSpriteSheet_tiles.Y));
+
+					// sprite within spritesheet
+					Rectangle rectSource = new Rectangle(
+						posSpriteSheet.X * sizeTile_pixels.X,
+						posSpriteSheet.Y * sizeTile_pixels.Y,
+						sizeTile_pixels.X,
+						sizeTile_pixels.Y);
+
+					Vector2 posScreen = new Vector2(
+						x * sizeTile_pixels.X,
+						y * sizeTile_pixels.Y);
+
+					tile.position = posScreen;
+					tile.rectSource = rectSource;
+					tile.texture = textSpriteSheet;
+
+					tilesSpriteSheet[index] = tile;
+					index++;
+				}
 		}
 
 		protected override void LoadContent()
@@ -108,7 +181,7 @@ namespace SpriteBatchDemo
 
 		protected override void Update(GameTime gameTime)
 		{
-			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || 
+			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
 				Keyboard.GetState().IsKeyDown(Keys.Escape))
 				Exit();
 
@@ -156,32 +229,11 @@ namespace SpriteBatchDemo
 				effect: null,
 				transformMatrix);
 			{
-
-				// render a set of tiles
-				Point sizeSpriteArray = new Point(
-					sizeResGame.X / sizeTile_pixels.X,
-					sizeResGame.Y / sizeTile_pixels.Y);
-				Random rng = new Random(0);
-				for (int y = 0; y < sizeSpriteArray.Y; y++)
-					for (int x = 0; x < sizeSpriteArray.X; x++)
-					{
-						// pick random tile
-						Point tile = new Point(
-							rng.Next(sizeSpriteSheet_tiles.X),
-							rng.Next(sizeSpriteSheet_tiles.Y));
-
-						// sprite within spritesheet
-						Rectangle rectSource = new Rectangle(
-							tile.X * sizeTile_pixels.X,
-							tile.Y * sizeTile_pixels.Y,
-							sizeTile_pixels.X,
-							sizeTile_pixels.Y);
-
-						Vector2 pos = new Vector2(
-							x * sizeTile_pixels.X,
-							y * sizeTile_pixels.Y);
-						spriteBatch.Draw(textSpriteSheet, pos, rectSource, Color.White);
-					}
+				// render all tiles
+				foreach (Tile tile in tilesSpriteSheet)
+				{
+					spriteBatch.Draw(tile.texture, tile.position, tile.rectSource, Color.White);
+				}
 			}
 			spriteBatch.End();
 		}
