@@ -20,6 +20,10 @@ namespace SpriteBatchDemo
 	{
 		// ---- constants
 
+		// sampler state
+		//private static SamplerState samplerState = SamplerState.PointWrap;
+		private static SamplerState samplerState = SamplerState.PointClamp;
+
 		// resolution
 #if DEBUG
 		private static Point sizeResScreen = new Point(1280, 720);
@@ -130,7 +134,7 @@ namespace SpriteBatchDemo
 			spriteBatch.Begin(
 				SpriteSortMode.Deferred,
 				BlendState.AlphaBlend,
-				SamplerState.PointWrap,
+				samplerState,
 				DepthStencilState.None,
 				RasterizerState.CullNone,
 				effect: null,
@@ -190,7 +194,7 @@ namespace SpriteBatchDemo
 			spriteBatch.Begin(
 				SpriteSortMode.Deferred,
 				BlendState.AlphaBlend,
-				SamplerState.PointWrap,
+				samplerState,
 				DepthStencilState.None,
 				RasterizerState.CullNone,
 				effect: null,
@@ -228,14 +232,7 @@ namespace SpriteBatchDemo
 
 		private void Render_SpriteSheet()
 		{
-			spriteBatch.Begin(
-				SpriteSortMode.Deferred,
-				BlendState.AlphaBlend,
-				SamplerState.PointWrap,
-				DepthStencilState.None,
-				RasterizerState.CullNone,
-				effect: null,
-				transformMatrix: null);
+			spriteBatch.Begin();
 
 			// border
 			spriteBatch.Draw(textWhite, 
