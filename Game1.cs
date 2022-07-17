@@ -35,7 +35,7 @@ namespace SpriteBatchDemo
 
 		// sprites
 		private Point sizeTile_pixels = new Point(16, 16);
-		private Point sizeSpriteSheet_tiles = new Point(4, 4);
+		private Point sizeSpriteSheet_tiles = new Point(8, 8);
 
 
 		// ---- data members
@@ -44,7 +44,7 @@ namespace SpriteBatchDemo
 		private GraphicsDeviceManager graphics;
 		private SpriteBatch spriteBatch;
 		private RenderTarget2D textLowResGame;
-		private Texture2D textSprite;
+		private Texture2D textSpriteSheet;
 		private Texture2D textWhite;
 
 
@@ -80,7 +80,7 @@ namespace SpriteBatchDemo
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			textSprite = art.CreateSpriteSheetTexture(sizeTile_pixels, sizeSpriteSheet_tiles);
+			textSpriteSheet = art.CreateSpriteSheetTexture(sizeTile_pixels, sizeSpriteSheet_tiles);
 			textWhite = art.CreateWhiteTexture(8);
 		}
 
@@ -99,15 +99,9 @@ namespace SpriteBatchDemo
 
 		protected override void Draw(GameTime gameTime)
 		{
-			// 1. render target
-
 			Render_LowResGameScreen(gameTime);
-
-			// 2. back buffer
-
 			Render_LowResGameScreen_to_BackBuffer();
-
-			// 3. base class
+			Render_SpriteSheet();
 
 			base.Draw(gameTime);
 		}
@@ -167,7 +161,7 @@ namespace SpriteBatchDemo
 					Vector2 pos = new Vector2(
 						x * sizeTile_pixels.X,
 						y * sizeTile_pixels.Y);
-					spriteBatch.Draw(textSprite, pos, rectSource, Color.White);
+					spriteBatch.Draw(textSpriteSheet, pos, rectSource, Color.White);
 				}
 			spriteBatch.End();
 		}
@@ -230,6 +224,33 @@ namespace SpriteBatchDemo
 				scale: 1.0f,
 				SpriteEffects.None,
 				layerDepth: 0.0f);
+
+			spriteBatch.End();
+		}
+
+		private void Render_SpriteSheet()
+		{
+			spriteBatch.Begin(
+				SpriteSortMode.Deferred,
+				BlendState.AlphaBlend,
+				SamplerState.PointWrap,
+				DepthStencilState.None,
+				RasterizerState.CullNone,
+				effect: null,
+				transformMatrix: null);
+
+			// border
+			spriteBatch.Draw(textWhite, 
+				new Rectangle(
+					sizeResScreen.X - textSpriteSheet.Width - 2, 0, 
+					textSpriteSheet.Width + 2, textSpriteSheet.Height + 2), 
+				Color.Black);
+			// sprite sheet
+			spriteBatch.Draw(textSpriteSheet, 
+				new Rectangle(
+					sizeResScreen.X - textSpriteSheet.Width - 1, 0, 
+					textSpriteSheet.Width, textSpriteSheet.Height), 
+				Color.White);
 
 			spriteBatch.End();
 		}
