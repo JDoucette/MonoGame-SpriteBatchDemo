@@ -201,6 +201,8 @@ namespace SpriteBatchDemo
 				RasterizerState.CullNone,
 				effect: null,
 				transformMatrix: null);
+
+			// zoomed in
 			spriteBatch.Draw(
 				textLowResGame,
 				position: Vector2.Zero,
@@ -211,6 +213,22 @@ namespace SpriteBatchDemo
 				scale: scaleGame,
 				SpriteEffects.None,
 				layerDepth: 0.0f);
+
+			// actual size
+			// border
+			spriteBatch.Draw(textWhite, new Rectangle(0, 0, sizeResGame.X + 2, sizeResGame.Y + 2), Color.Black);
+			// game screen
+			spriteBatch.Draw(
+				textLowResGame,
+				position: new Vector2(1,1),
+				sourceRectangle: null,
+				Color.White,
+				rotation: 0.0f,
+				origin: new Vector2(0, 0),
+				scale: 1.0f,
+				SpriteEffects.None,
+				layerDepth: 0.0f);
+
 			spriteBatch.End();
 		}
 
