@@ -23,7 +23,8 @@ namespace SpriteBatchDemo
 	{
 		// ---- constants
 
-		private StringBuilder strTitle = new StringBuilder("SpriteBatchDemo");
+		private readonly StringBuilder strTitle = new StringBuilder("SpriteBatchDemo");
+		private readonly StringBuilder str = new StringBuilder(256);
 
 		// sampler state
 		//private static SamplerState samplerState = SamplerState.PointWrap;
@@ -35,7 +36,7 @@ namespace SpriteBatchDemo
 #else
 		private static Point sizeResScreen = new Point(1920, 1080);
 #endif
-		private const int scaleGame = 5;
+		private const int scaleGame = 4;
 		private Point sizeResGame = new Point(
 			sizeResScreen.X / scaleGame, 
 			sizeResScreen.Y / scaleGame);
@@ -43,6 +44,10 @@ namespace SpriteBatchDemo
 		// sprites
 		private Point sizeTile_pixels = new Point(16, 16);
 		private Point sizeSpriteSheet_tiles = new Point(8, 8);
+
+		// matrix transform
+		private float rotate;
+		private float zoom;
 
 
 		// ---- data members
@@ -132,13 +137,13 @@ namespace SpriteBatchDemo
 			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
 
 			// exact copy of Kris Steele's transform matrix for PK, with changes to screen size & draw position:
-			float Rotation = 0.0f;  // (float)(timeTotal * 0.2746593);
-			float Zoom = (float)(2.0 + Math.Sin(timeTotal * 0.482658202));
+			rotate = 0.0f;  // (float)(timeTotal * 0.2746593);
+			zoom = (float)(3.0 + 2.0 * Math.Sin(timeTotal * 0.482658202));
 			Vector2 origin = new Vector2(sizeResGame.X * 0.5f, sizeResGame.Y * 0.5f);  // for rotation and zoom
 			Matrix transformMatrix =
 				Matrix.CreateTranslation(new Vector3(-origin, 0.0f)) *
-				Matrix.CreateRotationZ(Rotation) *
-				Matrix.CreateScale(Zoom) *
+				Matrix.CreateRotationZ(rotate) *
+				Matrix.CreateScale(zoom) *
 				Matrix.CreateTranslation(new Vector3(origin, 0.0f));
 
 			spriteBatch.Begin(
@@ -149,39 +154,53 @@ namespace SpriteBatchDemo
 				RasterizerState.CullNone,
 				effect: null,
 				transformMatrix);
+			{
 
-			// render a set of tiles
-			Point sizeSpriteArray = new Point(
-				sizeResGame.X / sizeTile_pixels.X,
-				sizeResGame.Y / sizeTile_pixels.Y);
-			Random rng = new Random(0);
-			for (int y = 0; y < sizeSpriteArray.Y; y++)
-				for (int x = 0; x < sizeSpriteArray.X; x++)
-				{
-					// pick random tile
-					Point tile = new Point(
-						rng.Next(sizeSpriteSheet_tiles.X),
-						rng.Next(sizeSpriteSheet_tiles.Y));
+				// render a set of tiles
+				Point sizeSpriteArray = new Point(
+					sizeResGame.X / sizeTile_pixels.X,
+					sizeResGame.Y / sizeTile_pixels.Y);
+				Random rng = new Random(0);
+				for (int y = 0; y < sizeSpriteArray.Y; y++)
+					for (int x = 0; x < sizeSpriteArray.X; x++)
+					{
+						// pick random tile
+						Point tile = new Point(
+							rng.Next(sizeSpriteSheet_tiles.X),
+							rng.Next(sizeSpriteSheet_tiles.Y));
 
-					// sprite within spritesheet
-					Rectangle rectSource = new Rectangle(
-						tile.X * sizeTile_pixels.X,
-						tile.Y * sizeTile_pixels.Y, 
-						sizeTile_pixels.X, 
-						sizeTile_pixels.Y);
+						// sprite within spritesheet
+						Rectangle rectSource = new Rectangle(
+							tile.X * sizeTile_pixels.X,
+							tile.Y * sizeTile_pixels.Y,
+							sizeTile_pixels.X,
+							sizeTile_pixels.Y);
 
-					Vector2 pos = new Vector2(
-						x * sizeTile_pixels.X,
-						y * sizeTile_pixels.Y);
-					spriteBatch.Draw(textSpriteSheet, pos, rectSource, Color.White);
-				}
+						Vector2 pos = new Vector2(
+							x * sizeTile_pixels.X,
+							y * sizeTile_pixels.Y);
+						spriteBatch.Draw(textSpriteSheet, pos, rectSource, Color.White);
+					}
+			}
 			spriteBatch.End();
 		}
 
 		private void Render_LowResGameScreen_HUD()
 		{
 			spriteBatch.Begin();
-			font.Draw(spriteBatch, strTitle, new Vector2(1, 1), Color.White);
+			{
+				Vector2 pos = new Vector2(1, 1);
+				font.Draw(spriteBatch, strTitle, pos, Color.White);
+				pos.Y += font.FontHeight;
+
+				str.Clear().AppendFormat("Zoom: {0}", zoom);
+				font.Draw(spriteBatch, str, pos, Color.White);
+				pos.Y += font.FontHeight;
+
+				str.Clear().AppendFormat("Rotate: {0}", rotate);
+				font.Draw(spriteBatch, str, pos, Color.White);
+				pos.Y += font.FontHeight;
+			}
 			spriteBatch.End();
 		}
 
@@ -198,50 +217,52 @@ namespace SpriteBatchDemo
 				RasterizerState.CullNone,
 				effect: null,
 				transformMatrix: null);
+			{
 
-			// 1. zoomed in
-			spriteBatch.Draw(
-				textLowResGame,
-				position: Vector2.Zero,
-				sourceRectangle: null,
-				Color.White,
-				rotation: 0.0f,
-				origin: new Vector2(0, 0),
-				scale: scaleGame,
-				SpriteEffects.None,
-				layerDepth: 0.0f);
+				// 1. zoomed in
+				spriteBatch.Draw(
+					textLowResGame,
+					position: Vector2.Zero,
+					sourceRectangle: null,
+					Color.White,
+					rotation: 0.0f,
+					origin: new Vector2(0, 0),
+					scale: scaleGame,
+					SpriteEffects.None,
+					layerDepth: 0.0f);
 
-			// 2. actual size
-			// lower-left
-			// border
-			spriteBatch.Draw(textWhite, 
-				new Rectangle(
-					0, sizeResScreen.Y - textLowResGame.Height - 2, 
-					sizeResGame.X + 2, sizeResGame.Y + 2), 
-				Color.Black);
-			// game screen
-			spriteBatch.Draw(textLowResGame, new Vector2(1, sizeResScreen.Y - textLowResGame.Height - 1), Color.White);
+				// 2. actual size
+				// lower-left
+				// border
+				spriteBatch.Draw(textWhite,
+					new Rectangle(
+						0, sizeResScreen.Y - textLowResGame.Height - 2,
+						sizeResGame.X + 2, sizeResGame.Y + 2),
+					Color.Black);
+				// game screen
+				spriteBatch.Draw(textLowResGame, new Vector2(1, sizeResScreen.Y - textLowResGame.Height - 1), Color.White);
 
+			}
 			spriteBatch.End();
 		}
 
 		private void Render_SpriteSheet()
 		{
 			spriteBatch.Begin();
+			{
+				// upper-right
 
-			// upper-right
-
-			// border
-			spriteBatch.Draw(textWhite, 
-				new Rectangle(
-					sizeResScreen.X - textSpriteSheet.Width - 2, 0, 
-					textSpriteSheet.Width + 2, textSpriteSheet.Height + 2), 
-				Color.Black);
-			// sprite sheet
-			spriteBatch.Draw(textSpriteSheet, 
-				new Vector2(sizeResScreen.X - textSpriteSheet.Width - 1, 0), 
-				Color.White);
-
+				// border
+				spriteBatch.Draw(textWhite,
+					new Rectangle(
+						sizeResScreen.X - textSpriteSheet.Width - 2, 0,
+						textSpriteSheet.Width + 2, textSpriteSheet.Height + 2),
+					Color.Black);
+				// sprite sheet
+				spriteBatch.Draw(textSpriteSheet,
+					new Vector2(sizeResScreen.X - textSpriteSheet.Width - 1, 0),
+					Color.White);
+			}
 			spriteBatch.End();
 		}
 
