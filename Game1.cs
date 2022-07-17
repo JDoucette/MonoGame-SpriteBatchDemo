@@ -222,7 +222,8 @@ namespace SpriteBatchDemo
 		{
 			Render_LowResGameScreen(gameTime);
 			Render_LowResGameScreen_to_BackBuffer();
-			Render_SpriteSheet();
+			Render_Hud_SpriteSheet();
+			Render_Hud_IndividualSprites();
 
 			base.Draw(gameTime);
 		}
@@ -233,7 +234,7 @@ namespace SpriteBatchDemo
 			GraphicsDevice.Clear(new Color(0, 0, 0));
 
 			Render_LowResGameScreen_Foreground(gameTime);
-			Render_LowResGameScreen_HUD();
+			Render_LowResGameScreen_Hud();
 		}
 
 		private void Render_LowResGameScreen_Foreground(GameTime gameTime)
@@ -271,7 +272,7 @@ namespace SpriteBatchDemo
 			spriteBatch.End();
 		}
 
-		private void Render_LowResGameScreen_HUD()
+		private void Render_LowResGameScreen_Hud()
 		{
 			spriteBatch.Begin();
 			{
@@ -332,7 +333,7 @@ namespace SpriteBatchDemo
 			spriteBatch.End();
 		}
 
-		private void Render_SpriteSheet()
+		private void Render_Hud_SpriteSheet()
 		{
 			spriteBatch.Begin();
 			{
@@ -348,6 +349,22 @@ namespace SpriteBatchDemo
 				spriteBatch.Draw(textSpriteSheet,
 					new Vector2(sizeResScreen.X - textSpriteSheet.Width - 1, 0),
 					Color.White);
+			}
+			spriteBatch.End();
+		}
+
+		private void Render_Hud_IndividualSprites()
+		{
+			spriteBatch.Begin();
+			{
+				// lower-right
+
+				Vector2 pos = new Vector2(sizeResScreen.X - sizeTile_pixels.X, sizeResScreen.Y - sizeTile_pixels.Y);
+				foreach (Texture2D texture in textSpritesIndividual)
+				{
+					spriteBatch.Draw(texture, pos, Color.White);
+					pos.X -= sizeTile_pixels.X;
+				}
 			}
 			spriteBatch.End();
 		}
