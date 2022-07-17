@@ -26,14 +26,14 @@ namespace SpriteBatchDemo
 #else
 		private static Point sizeResScreen = new Point(1920, 1080);
 #endif
-		private const int scaleGame = 4;
+		private const int scaleGame = 6;
 		private Point sizeResGame = new Point(
 			sizeResScreen.X / scaleGame, 
 			sizeResScreen.Y / scaleGame);
 
 		// sprites
 		private Point sizeTile_pixels = new Point(16, 16);
-		private Point sizeSpriteSheet_tiles = new Point(8, 8);
+		private Point sizeSpriteSheet_tiles = new Point(4, 4);
 
 
 		// ---- data members
@@ -124,11 +124,8 @@ namespace SpriteBatchDemo
 			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
 
 			// exact copy of Kris Steele's transform matrix for PK, with changes to screen size & draw position:
-			Vector2 DrawPosition = new Vector2(
-				sizeResGame.X * 0.125f,
-				sizeResGame.Y * 0.125f);
-			float Rotation = 0.0f; // (float)(timeTotal * 0.5);
-			float Zoom = (float)(2.0 + Math.Sin(timeTotal * 0.5));
+			float Rotation = (float)(timeTotal * 0.2746593);
+			float Zoom = (float)(2.0 + Math.Sin(timeTotal * 0.482658202));
 			Vector2 origin = new Vector2(sizeResGame.X * 0.5f, sizeResGame.Y * 0.5f);  // for rotation and zoom
 			Matrix transformMatrix =
 				Matrix.CreateTranslation(new Vector3(-origin, 0.0f)) *

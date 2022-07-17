@@ -85,5 +85,5 @@ namespace SpriteBatchDemo
 			return texture;
 		}
 
-	}
-}
+	}  // 	class Art
+}  // namespace SpriteBatchDemo
