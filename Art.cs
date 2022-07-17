@@ -51,14 +51,16 @@ namespace SpriteBatchDemo
 			for (int yTile = 0; yTile < sizeSpriteSheet_tiles.Y; yTile++)
 				for (int xTile = 0; xTile < sizeSpriteSheet_tiles.X; xTile++)
 				{
-					Color colorTileEdge = new Color(
-						64 + rng.Next(192),
-						64 + rng.Next(192),
-						64 + rng.Next(192));
-					Color colorTileChecker = new Color(
-						64 + rng.Next(64),
-						64 + rng.Next(64),
-						64 + rng.Next(64));
+					bool parityTile = ((xTile + yTile) & 1) == 1;
+					Color colorTileEdge = new Color(64 + rng.Next(192), 64 + rng.Next(192), 64 + rng.Next(192));
+					Color colorTileChecker1 = new Color(64 + rng.Next(64), 64 + rng.Next(64), 64 + rng.Next(64));
+					Color colorTileChecker2 = new Color(0, 0, 0);
+					if (parityTile)
+					{
+						colorTileEdge = new Color(0, 0, 0, 0);
+						colorTileChecker1 = new Color(0, 0, 0, 0);
+						colorTileChecker2 = new Color(0, 0, 0, 0);
+					}
 					Point spriteTopLeft = new Point(
 						xTile * sizeTile_pixels.X, 
 						yTile * sizeTile_pixels.Y);
@@ -71,12 +73,12 @@ namespace SpriteBatchDemo
 								yPixel == 0 || 
 								xPixel == sizeTile_pixels.X - 1 || 
 								yPixel == sizeTile_pixels.Y - 1);
-							bool parity = ((xPixel + yPixel) & 1) == 1;
+							bool parityPixel = ((xPixel + yPixel) & 1) == 1;
 							int indexPixelColor = (pixel.Y * sizeSpriteTexture.X) + pixel.X;
 							colors[indexPixelColor] =
 								(edge
 									? colorTileEdge
-									: (parity ? colorTileChecker : Color.Black));
+									: (parityPixel ? colorTileChecker1 : colorTileChecker2));
 						}
 				}
 
