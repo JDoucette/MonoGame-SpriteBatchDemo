@@ -2,9 +2,16 @@
 // July 15, 2022
 // SpriteBatch Demo
 //
+// PURPOSE:
 // Testing Draw() with scaling with PointClamp / PointWrap
-// also with transforms, and to see if it works or ruins neares neighbour.
+// also with transforms, and to see if it works or ruins "nearest neighbour" style rendering.
 // And also using sprite sheets, to see if it changes things.
+//
+// CONCLUSION:
+// "Nearest neighbour" is maintained with PointClamp / PointWrap, even with matrix transforms.
+// However, the texel access out-of-bounds range is for the texture, not the sub-texture within the sprite sheet.
+// This means floating point inaccuracies that occur with the zoom factor is non-integer dips into out-of-range pixels.
+// In our case, our tile sprite sheet has no borders, so out-of-bounds texel access is accessing am adjacent tile.
 //
 // TODO:
 //	1.	Allow keyboard control:  sample state, and spritesheet vs individual.  Show results in HUD.
