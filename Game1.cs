@@ -6,9 +6,6 @@
 // also with transforms, and to see if it works or ruins neares neighbour.
 // And also using sprite sheets, to see if it changes things.
 
-// TODO NEXT
-// - try it using a sprite sheet
-
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -44,7 +41,7 @@ namespace SpriteBatchDemo
 		private Art art;
 		private GraphicsDeviceManager graphics;
 		private SpriteBatch spriteBatch;
-		private RenderTarget2D textGame;
+		private RenderTarget2D textLowResGame;
 		private Texture2D textSprite;
 		private Texture2D textWhite;
 
@@ -73,7 +70,7 @@ namespace SpriteBatchDemo
 		protected override void Initialize()
 		{
 			art = new Art(GraphicsDevice);
-			textGame = new RenderTarget2D(GraphicsDevice, sizeResGame.X, sizeResGame.Y, mipMap: false, SurfaceFormat.Color, DepthFormat.None);
+			textLowResGame = new RenderTarget2D(GraphicsDevice, sizeResGame.X, sizeResGame.Y, mipMap: false, SurfaceFormat.Color, DepthFormat.None);
 			base.Initialize();
 		}
 
@@ -115,7 +112,7 @@ namespace SpriteBatchDemo
 
 		private void Render_LowResGameScreen(GameTime gameTime)
 		{
-			GraphicsDevice.SetRenderTarget((RenderTarget2D)textGame);
+			GraphicsDevice.SetRenderTarget((RenderTarget2D)textLowResGame);
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			Render_LowResGameScreen_Backdrop();
@@ -126,35 +123,18 @@ namespace SpriteBatchDemo
 		{
 			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
 
-			////float scale = 1.0f;
-			//float rotation = 0.0f;
-			//float scale = (float)(2.0 + Math.Sin(timeTotal * 0.5));
-			////float rotation = (float)(timeTotal * 0.1);
-
-			//Matrix transformMatrix =
-			//	//Matrix.CreateTranslation(new Vector3(0, 0, 0)) *
-			//	//Matrix.CreateRotationX(rotation) *
-			//	//Matrix.CreateRotationY(rotation) *
-			//	Matrix.CreateRotationZ(rotation) *
-			//	Matrix.CreateScale(scale)
-			//	//Matrix.CreateTranslation(new Vector3(0, 0, 0))
-			//	;
-
 			// exact copy of Kris Steele's transform matrix for PK, with changes to screen size & draw position:
 			Vector2 DrawPosition = new Vector2(
 				sizeResGame.X * 0.125f,
 				sizeResGame.Y * 0.125f);
-			float Rotation = 0.0f;
+			float Rotation = 0.0f; // (float)(timeTotal * 0.5);
 			float Zoom = (float)(2.0 + Math.Sin(timeTotal * 0.5));
-			//float ViewportWidth = GraphicsDevice.Viewport.Width;
-			//float ViewportHeight = GraphicsDevice.Viewport.Height;
-			float ViewportWidth = sizeResGame.X;
-			float ViewportHeight = sizeResGame.Y;
+			Vector2 origin = new Vector2(sizeResGame.X * 0.5f, sizeResGame.Y * 0.5f);  // for rotation and zoom
 			Matrix transformMatrix =
-				Matrix.CreateTranslation(new Vector3((int)-DrawPosition.X, (int)-DrawPosition.Y, 0)) *
+				Matrix.CreateTranslation(new Vector3(-origin, 0.0f)) *
 				Matrix.CreateRotationZ(Rotation) *
 				Matrix.CreateScale(Zoom) *
-				Matrix.CreateTranslation(new Vector3(ViewportWidth * 0.5f, ViewportHeight * 0.5f, 0));
+				Matrix.CreateTranslation(new Vector3(origin, 0.0f));
 
 			spriteBatch.Begin(
 				SpriteSortMode.Deferred,
@@ -165,14 +145,30 @@ namespace SpriteBatchDemo
 				effect: null,
 				transformMatrix);
 
-			Point sizeSpriteArray = new Point(1, 1);
+			// render a set of tiles
+			Point sizeSpriteArray = new Point(
+				sizeResGame.X / sizeTile_pixels.X,
+				sizeResGame.Y / sizeTile_pixels.Y);
+			Random rng = new Random(0);
 			for (int y = 0; y < sizeSpriteArray.Y; y++)
 				for (int x = 0; x < sizeSpriteArray.X; x++)
 				{
+					// pick random tile
+					Point tile = new Point(
+						rng.Next(sizeSpriteSheet_tiles.X),
+						rng.Next(sizeSpriteSheet_tiles.Y));
+
+					// sprite within spritesheet
+					Rectangle rectSource = new Rectangle(
+						tile.X * sizeTile_pixels.X,
+						tile.Y * sizeTile_pixels.Y, 
+						sizeTile_pixels.X, 
+						sizeTile_pixels.Y);
+
 					Vector2 pos = new Vector2(
-						x * textSprite.Width + 16,
-						y * textSprite.Height);
-					spriteBatch.Draw(textSprite, pos, Color.White);
+						x * sizeTile_pixels.X,
+						y * sizeTile_pixels.Y);
+					spriteBatch.Draw(textSprite, pos, rectSource, Color.White);
 				}
 			spriteBatch.End();
 		}
@@ -209,7 +205,7 @@ namespace SpriteBatchDemo
 				effect: null,
 				transformMatrix: null);
 			spriteBatch.Draw(
-				textGame,
+				textLowResGame,
 				position: Vector2.Zero,
 				sourceRectangle: null,
 				Color.White,
@@ -221,6 +217,5 @@ namespace SpriteBatchDemo
 			spriteBatch.End();
 		}
 
-
-	}
-}
+	}  // 	public class Game1 : Game
+}  // namespace SpriteBatchDemo
