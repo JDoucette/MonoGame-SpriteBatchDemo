@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Text;
+using System.Diagnostics;
 
 namespace SpriteBatchDemo
 {
@@ -156,6 +157,7 @@ namespace SpriteBatchDemo
 					tile.position = posScreen;
 					tile.rectSource = rectSource;
 					tile.texture = textSpriteSheet;
+					Debug.Assert(tile.texture != null);  // must call this after LoadContent()
 
 					tilesSpriteSheet[index] = tile;
 					index++;
