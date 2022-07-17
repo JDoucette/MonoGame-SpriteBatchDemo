@@ -107,7 +107,7 @@ namespace SpriteBatchDemo
 		private void Render_LowResGameScreen(GameTime gameTime)
 		{
 			GraphicsDevice.SetRenderTarget((RenderTarget2D)textLowResGame);
-			GraphicsDevice.Clear(Color.CornflowerBlue);
+			GraphicsDevice.Clear(Color.Black);
 
 			Render_LowResGameScreen_Backdrop();
 			Render_LowResGameScreen_Foreground(gameTime);
@@ -118,7 +118,7 @@ namespace SpriteBatchDemo
 			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
 
 			// exact copy of Kris Steele's transform matrix for PK, with changes to screen size & draw position:
-			float Rotation = (float)(timeTotal * 0.2746593);
+			float Rotation = 0.0f; // (float)(timeTotal * 0.2746593);
 			float Zoom = (float)(2.0 + Math.Sin(timeTotal * 0.482658202));
 			Vector2 origin = new Vector2(sizeResGame.X * 0.5f, sizeResGame.Y * 0.5f);  // for rotation and zoom
 			Matrix transformMatrix =
@@ -174,7 +174,7 @@ namespace SpriteBatchDemo
 			spriteBatch.Draw(textWhite, new Rectangle(0, 48, 16, 16), new Color(0, 0, 255));
 			// random 1x1 dots, to show the pixel size of the low resolution screen
 			Random rng = new Random(0);
-			for (int i = 0; i < 4096; i++)
+			for (int i = 0; i < 1024; i++)
 				spriteBatch.Draw(
 					textWhite,
 					new Rectangle(rng.Next(sizeResGame.X), rng.Next(sizeResScreen.Y), 1, 1),
