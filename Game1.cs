@@ -5,6 +5,11 @@
 // Testing Draw() with scaling with PointClamp / PointWrap
 // also with transforms, and to see if it works or ruins neares neighbour.
 // And also using sprite sheets, to see if it changes things.
+//
+// TODO:
+//	1.	Try rendering without sprite sheet, where each tile is its own Texture2D.
+//		When the transform coordinates go outside of texture coordinates, it should Clamp or Wrap.
+//		Whereas with the sprite sheet, it appears neither of these prevent out-of-range, as it applies to the texture, not the sub-texture.
 
 using System;
 using Microsoft.Xna.Framework;
@@ -86,7 +91,9 @@ namespace SpriteBatchDemo
 			textSpriteSheet = art.CreateSpriteSheetTexture(sizeTile_pixels, sizeSpriteSheet_tiles);
 			textWhite = art.CreateWhiteTexture(8);
 
-			font = new Font(Content.Load<Texture2D>(@"Fonts\font-arcade-classic-7x7-jason-edit"));
+			//font = new Font(Content.Load<Texture2D>(@"Fonts\font-arcade-classic-7x7-jason-edit"));
+			//font = new Font(Content.Load<Texture2D>(@"Fonts\font-jason-5x6-fixed"));
+			font = new Font(Content.Load<Texture2D>(@"Fonts\font-jason-7x8-fixed-double-bold"));
 		}
 
 		protected override void UnloadContent()
@@ -192,7 +199,7 @@ namespace SpriteBatchDemo
 				effect: null,
 				transformMatrix: null);
 
-			// zoomed in
+			// 1. zoomed in
 			spriteBatch.Draw(
 				textLowResGame,
 				position: Vector2.Zero,
@@ -204,8 +211,8 @@ namespace SpriteBatchDemo
 				SpriteEffects.None,
 				layerDepth: 0.0f);
 
+			// 2. actual size
 			// lower-left
-			// actual size
 			// border
 			spriteBatch.Draw(textWhite, 
 				new Rectangle(
