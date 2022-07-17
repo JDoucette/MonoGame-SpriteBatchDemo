@@ -6,6 +6,8 @@
 // also with transforms, and to see if it works or ruins neares neighbour.
 // And also using sprite sheets, to see if it changes things.
 
+// TODO - try rendering sprite tiles that have empty border around them, and without rotation, to see if there are any gaps or rendering issues.
+
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
