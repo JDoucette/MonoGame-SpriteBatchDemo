@@ -22,7 +22,7 @@ namespace SpriteBatchDemo
 
 		// sampler state
 		//private static SamplerState samplerState = SamplerState.PointWrap;
-		private static SamplerState samplerState = SamplerState.PointClamp;
+		private static readonly SamplerState samplerState = SamplerState.PointClamp;
 
 		// resolution
 #if DEBUG
@@ -43,7 +43,7 @@ namespace SpriteBatchDemo
 		// ---- data members
 
 		private Art art;
-		private GraphicsDeviceManager graphics;
+		private readonly GraphicsDeviceManager graphics;
 		private SpriteBatch spriteBatch;
 		private RenderTarget2D textLowResGame;
 		private Texture2D textSpriteSheet;
@@ -122,7 +122,7 @@ namespace SpriteBatchDemo
 			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
 
 			// exact copy of Kris Steele's transform matrix for PK, with changes to screen size & draw position:
-			float Rotation = 0.0f; // (float)(timeTotal * 0.2746593);
+			float Rotation = (float)(timeTotal * 0.2746593);
 			float Zoom = (float)(2.0 + Math.Sin(timeTotal * 0.482658202));
 			Vector2 origin = new Vector2(sizeResGame.X * 0.5f, sizeResGame.Y * 0.5f);  // for rotation and zoom
 			Matrix transformMatrix =
