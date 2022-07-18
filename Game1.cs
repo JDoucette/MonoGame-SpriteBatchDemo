@@ -14,8 +14,9 @@
 // In our case, our tile sprite sheet has no borders, so out-of-bounds texel access is accessing am adjacent tile.
 //
 // TODO:
-//	1.	Allow keyboard control:  sample state, and spritesheet vs individual.  Show results in HUD.
-//	2.	Allow keyboard control:  zoom, rotate, and recenter
+//	1.	Implement camera scrolling, through a level, to check for floating point precision issues as the magnitudes rise.
+//	2.	Allow keyboard control:  sample state, and spritesheet vs individual.  Show results in HUD.
+//	3.	Allow keyboard control:  zoom, rotate, and recenter
 
 #define SETTING_POINTCLAMP  // for SamplerState: if set, then PointClamp, else PointWrap
 #define USE_SPRITESHEET  // else, draw individual textures
