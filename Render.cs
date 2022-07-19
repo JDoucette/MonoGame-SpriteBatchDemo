@@ -65,13 +65,19 @@ namespace SpriteBatchDemo
 			this.spriteBatch = new SpriteBatch(graphicsDevice);
 
 			this.sizeResScreen = new Point(
-				GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width,
-				GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
+				graphicsDevice.Viewport.Width,  // window size, if not full screen
+				graphicsDevice.Viewport.Height);
+			//this.sizeResScreen = new Point(
+			//	GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width,  // OS screen size
+			//	GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
 
 			this.sizeResGame = new Point(
 				sizeResScreen.X / scaleGame,
 				sizeResScreen.Y / scaleGame);
-			textLowResGame = new RenderTarget2D(graphicsDevice, sizeResGame.X, sizeResGame.Y, mipMap: false, SurfaceFormat.Color, DepthFormat.None);
+			textLowResGame = new RenderTarget2D(graphicsDevice, 
+				sizeResGame.X, 
+				sizeResGame.Y, 
+				mipMap: false, SurfaceFormat.Color, DepthFormat.None);
 		}
 
 		internal void LoadContent(ContentManager content)
