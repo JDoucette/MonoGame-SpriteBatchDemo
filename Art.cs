@@ -12,11 +12,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpriteBatchDemo
 {
-	class Art
+	public class Art
 	{
 		// ---- data members
 
 		private GraphicsDevice graphicsDevice;
+
 
 
 		// ---- methods
