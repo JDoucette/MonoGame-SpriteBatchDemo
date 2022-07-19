@@ -125,12 +125,20 @@ namespace SpriteBatchDemo
 
 		protected override void Draw(GameTime gameTime)
 		{
-#if USE_SPRITESHEET
-			Tiles.Tile[] tilesToRender = tiles.GetTilesSpriteSheet;
+#if SETTING_POINTCLAMP
+			bool bPointClamp = true;
 #else
-			Tiles.Tile[] tilesToRender = tiles.GetIndividualSprites;
+			bool bPointClamp = false;
 #endif
-			render.Render_LowResGameScreen(gameTime, tilesToRender);
+			render.SetSamplerState(bPointClamp);
+
+#if USE_SPRITESHEET
+		bool bSpriteSheet = true;
+#else
+			bool bSpriteSheet = false;
+#endif
+
+			render.Render_LowResGameScreen(gameTime, bSpriteSheet);
 			render.Render_LowResGameScreen_to_BackBuffer();
 			render.Render_Hud_SpriteSheet(tiles.GetTextSpriteSheet);
 			render.Render_Hud_IndividualSprites(tiles.GetSizeTilePixels);

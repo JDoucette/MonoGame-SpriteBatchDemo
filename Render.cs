@@ -20,13 +20,6 @@ namespace SpriteBatchDemo
 		private readonly double zoomSpeed = 0.4534828;
 		private readonly double rotateSpeed = 0.0;  // 0.2746593;
 
-		// sampler state
-#if SETTING_POINTCLAMP
-		private static readonly SamplerState samplerState = SamplerState.PointClamp;
-#else
-		private static readonly SamplerState samplerState = SamplerState.PointWrap;
-#endif
-
 		// resolution
 		private const int scaleGame = 4;
 
@@ -44,9 +37,10 @@ namespace SpriteBatchDemo
 		// graphics
 		private GraphicsDevice graphicsDevice;
 		private readonly SpriteBatch spriteBatch;
+		private SamplerState samplerState = SamplerState.PointClamp;
 
 		// game screen
-		private RenderTarget2D textLowResGame;
+		private readonly RenderTarget2D textLowResGame;
 
 		// resolution
 		private Point sizeResGame;
@@ -93,8 +87,12 @@ namespace SpriteBatchDemo
 			font = new Font(content.Load<Texture2D>(@"Fonts\font-jason-7x8-fixed-double-bold"));
 		}
 
-		public void Render_LowResGameScreen(GameTime gameTime, Tiles.Tile[] tilesToRender)
+		public void Render_LowResGameScreen(GameTime gameTime, bool bSpriteSheet)
 		{
+			Tiles.Tile[] tilesToRender = bSpriteSheet ? 
+				game.GetTiles.GetTilesSpriteSheet : 
+				game.GetTiles.GetIndividualSprites;
+
 			graphicsDevice.SetRenderTarget((RenderTarget2D)textLowResGame);
 			graphicsDevice.Clear(new Color(0, 0, 0));
 
@@ -130,6 +128,13 @@ namespace SpriteBatchDemo
 					spriteBatch.Draw(tile.texture, tile.position, tile.rectSource, Color.White);
 			}
 			spriteBatch.End();
+		}
+
+		internal void SetSamplerState(bool bPointClamp)
+		{
+			samplerState = bPointClamp
+				? SamplerState.PointClamp
+				: SamplerState.PointWrap;
 		}
 
 		private void Render_LowResGameScreen_Hud()
