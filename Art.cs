@@ -39,6 +39,19 @@ namespace SpriteBatchDemo
 			return texture;
 		}
 
+		private void GetTileColors(out Color colorTileEdge, out Color colorTileChecker1, out Color colorTileChecker2)
+		{
+			colorTileEdge = new Color(
+				64 + MathUtil.rng.Next(192),
+				64 + MathUtil.rng.Next(192),
+				0 + MathUtil.rng.Next(128));
+			colorTileChecker1 = new Color(
+				64 + MathUtil.rng.Next(64),
+				64 + MathUtil.rng.Next(64),
+				0 + MathUtil.rng.Next(64));
+			colorTileChecker2 = new Color(0, 0, 0);
+		}
+
 		public Texture2D CreateSpriteSheetTexture(Point sizeTile_pixels, Point sizeSpriteSheet_tiles)
 		{
 			Point sizeSpriteTexture = new Point(
@@ -51,9 +64,7 @@ namespace SpriteBatchDemo
 				for (int xTile = 0; xTile < sizeSpriteSheet_tiles.X; xTile++)
 				{
 					bool invisibleTile = MathUtil.rng.NextDouble() < 0.5;
-					Color colorTileEdge = new Color(64 + MathUtil.rng.Next(192), 64 + MathUtil.rng.Next(192), 64 + MathUtil.rng.Next(192));
-					Color colorTileChecker1 = new Color(64 + MathUtil.rng.Next(64), 64 + MathUtil.rng.Next(64), 64 + MathUtil.rng.Next(64));
-					Color colorTileChecker2 = new Color(0, 0, 0);
+					GetTileColors(out Color colorTileEdge, out Color colorTileChecker1, out Color colorTileChecker2);
 					if (invisibleTile)
 					{
 						colorTileEdge = new Color(0, 0, 0, 0);
@@ -96,9 +107,7 @@ namespace SpriteBatchDemo
 
 		private Texture2D CreateSingleSprite(Point sizeTile)
 		{
-			Color colorTileEdge = new Color(64 + MathUtil.rng.Next(192), 64 + MathUtil.rng.Next(192), 64 + MathUtil.rng.Next(192));
-			Color colorTileChecker1 = new Color(64 + MathUtil.rng.Next(64), 64 + MathUtil.rng.Next(64), 64 + MathUtil.rng.Next(64));
-			Color colorTileChecker2 = new Color(0, 0, 0);
+			GetTileColors(out Color colorTileEdge, out Color colorTileChecker1, out Color colorTileChecker2);
 
 			int numPixels = sizeTile.X * sizeTile.Y;
 			Color[] colors = new Color[numPixels];

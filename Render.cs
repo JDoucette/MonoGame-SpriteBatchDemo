@@ -148,15 +148,15 @@ namespace SpriteBatchDemo
 			spriteBatch.Begin();
 			{
 				Vector2 pos = new Vector2(1, 1);
-				font.Draw(spriteBatch, strTitle, pos, Color.PaleVioletRed);
+				font.Draw(spriteBatch, strTitle, pos, Color.CornflowerBlue);
 				pos.Y += font.FontHeight;
 
 				str.Clear().AppendFormat("  Zoom:{0,6:F3}", zoom);
-				font.Draw(spriteBatch, str, pos, Color.White);
+				font.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
 				pos.Y += font.FontHeight;
 
 				str.Clear().AppendFormat("Rotate:{0,6:F3}", rotate);
-				font.Draw(spriteBatch, str, pos, Color.White);
+				font.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
 				pos.Y += font.FontHeight;
 			}
 			spriteBatch.End();
