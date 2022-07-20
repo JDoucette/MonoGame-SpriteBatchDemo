@@ -145,19 +145,19 @@ namespace SpriteBatchDemo
 				fontMain.Draw(spriteBatch, strTitle, pos, Color.CornflowerBlue);
 				pos.Y += fontMain.FontHeight;
 
-				str.Clear().AppendFormat("{0}", samplerState);
+				str.Clear().AppendFormat("[A] {0}", samplerState);
 				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
 				pos.Y += fontSmall.FontHeight;
 
-				str.Clear().AppendFormat("SpriteSheet: {0}", bSpriteSheet);
+				str.Clear().AppendFormat("[B] SpriteSheet: {0}", bSpriteSheet);
 				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
 				pos.Y += fontSmall.FontHeight;
 
-				str.Clear().AppendFormat("Zoom:{0,6:F3}", zoom);
+				str.Clear().AppendFormat("[X] Zoom:{0,6:F3}", zoom);
 				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
 				pos.Y += fontSmall.FontHeight;
 
-				str.Clear().AppendFormat("Rotate:{0,6:F3}", rotate);
+				str.Clear().AppendFormat("[Y] Rotate:{0,6:F3}", rotate);
 				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
 				pos.Y += fontSmall.FontHeight;
 			}

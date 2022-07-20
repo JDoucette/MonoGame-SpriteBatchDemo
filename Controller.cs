@@ -34,6 +34,12 @@ namespace SpriteBatchDemo
 
 		private Game1 game;
 
+		// input
+		private GamePadState gamePadStateCurr;
+		private GamePadState gamePadStatePrev;
+		private KeyboardState keyboardStateCurr;
+		private KeyboardState keyboardStatePrev;
+
 		// controls
 		private Vector2 pos = new Vector2(0, 0);
 		private float zoom = 1.0f;
@@ -51,24 +57,71 @@ namespace SpriteBatchDemo
 
 		public void Update(GameTime gameTime)
 		{
-			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-				Keyboard.GetState().IsKeyDown(Keys.Escape))
-				game.Exit();
+			// get input
+			gamePadStatePrev = gamePadStateCurr;
+			gamePadStateCurr = GamePad.GetState(PlayerIndex.One);
+			keyboardStatePrev = keyboardStateCurr;
+			keyboardStateCurr = Keyboard.GetState();
 
+			// process input devices
+			bool exit = 
+				gamePadStateCurr.Buttons.Back == ButtonState.Pressed || 
+				keyboardStateCurr.IsKeyDown(Keys.Escape);
+			bool buttonA = gamePadStatePrev.Buttons.A == ButtonState.Released && gamePadStateCurr.Buttons.A == ButtonState.Pressed;
+			bool buttonB = gamePadStatePrev.Buttons.B == ButtonState.Released && gamePadStateCurr.Buttons.B == ButtonState.Pressed;
+			bool buttonX = gamePadStatePrev.Buttons.X == ButtonState.Released && gamePadStateCurr.Buttons.X == ButtonState.Pressed;
+			bool buttonY = gamePadStatePrev.Buttons.Y == ButtonState.Released && gamePadStateCurr.Buttons.Y == ButtonState.Pressed;
+			buttonA |= keyboardStatePrev.IsKeyUp(Keys.A) && keyboardStateCurr.IsKeyDown(Keys.A);
+			buttonB |= keyboardStatePrev.IsKeyUp(Keys.B) && keyboardStateCurr.IsKeyDown(Keys.B);
+			buttonX |= keyboardStatePrev.IsKeyUp(Keys.X) && keyboardStateCurr.IsKeyDown(Keys.X);
+			buttonY |= keyboardStatePrev.IsKeyUp(Keys.Y) && keyboardStateCurr.IsKeyDown(Keys.Y);
+
+			// exit?
+			if (exit) game.Exit();
+
+			if (buttonA) ChangeSamplerState();
+			if (buttonB) ChangeSpriteSheet();
+			if (buttonX) ChangeZoom();
+			if (buttonY) ChangeRotate();
+
+			// auto rotate & zoom
 			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
-
 			rotate = (float)(timeTotal * rotateSpeed);
 			zoom = (float)(2.5 + 1.5 * Math.Sin(timeTotal * zoomSpeed));
+		}
 
-			/*
-			public static readonly SamplerState AnisotropicClamp;
-			public static readonly SamplerState AnisotropicWrap;
-			public static readonly SamplerState LinearClamp;
-			public static readonly SamplerState LinearWrap;
-			public static readonly SamplerState PointClamp;
-			public static readonly SamplerState PointWrap;
-			*/
+		private List<SamplerState> samplerStates = new List<SamplerState>() {
+				SamplerState.AnisotropicClamp,
+				SamplerState.AnisotropicWrap,
+				SamplerState.LinearClamp,
+				SamplerState.LinearWrap,
+				SamplerState.PointClamp,
+				SamplerState.PointWrap
+			};
 
+		private void ChangeSamplerState()
+		{
+			int count = samplerStates.Count;
+			int index = 0;
+			while (samplerStates[index] != samplerState) index++;
+			index++;  // next
+			if (index >= count) index = 0;
+			samplerState = samplerStates[index];
+		}
+
+		private void ChangeSpriteSheet()
+		{
+			bUseSpriteSheet = !bUseSpriteSheet;
+		}
+
+		private void ChangeZoom()
+		{
+			throw new NotImplementedException();
+		}
+
+		private void ChangeRotate()
+		{
+			throw new NotImplementedException();
 		}
 
 	}  // public class Controller
