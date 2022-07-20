@@ -37,6 +37,19 @@ namespace SpriteBatchDemo
 		public float GetRotate { get { return rotate; } }
 		public bool GetUseSpriteSheet { get { return bUseSpriteSheet; } }
 		public SamplerState GetSamplerState { get { return samplerState; } }
+		public Matrix GetTransformMatrix { 
+			get {
+				Point sizeResGame = game.GetRender.GetSizeResGame;
+				// exact copy of Kris Steele's transform matrix for PK, with changes to screen size & draw position:
+				Vector2 origin = new Vector2(sizeResGame.X * 0.5f, sizeResGame.Y * 0.5f);  // for rotation and zoom
+				Matrix transformMatrix =
+					Matrix.CreateTranslation(new Vector3(-origin, 0.0f)) *
+					Matrix.CreateRotationZ(rotate) *
+					Matrix.CreateScale(zoom) *
+					Matrix.CreateTranslation(new Vector3(origin, 0.0f));
+				return transformMatrix;
+			}
+		}
 
 
 		// ---- data members

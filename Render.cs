@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpriteBatchDemo
 {
-	class Render
+	public class Render
 	{
 		// ---- constants
 
@@ -22,6 +22,11 @@ namespace SpriteBatchDemo
 		// hud
 		private readonly StringBuilder strTitle = new StringBuilder("SpriteBatch Demo");
 		private readonly StringBuilder str = new StringBuilder(256);
+
+
+		// ---- properties
+
+		public Point GetSizeResGame { get { return sizeResGame; } }
 
 
 		// ---- data members
@@ -107,13 +112,7 @@ namespace SpriteBatchDemo
 			float zoom = game.GetController.GetZoom;
 			float rotate = game.GetController.GetRotate;
 
-			// exact copy of Kris Steele's transform matrix for PK, with changes to screen size & draw position:
-			Vector2 origin = new Vector2(sizeResGame.X * 0.5f, sizeResGame.Y * 0.5f);  // for rotation and zoom
-			Matrix transformMatrix =
-				Matrix.CreateTranslation(new Vector3(-origin, 0.0f)) *
-				Matrix.CreateRotationZ(rotate) *
-				Matrix.CreateScale(zoom) *
-				Matrix.CreateTranslation(new Vector3(origin, 0.0f));
+			Matrix transformMatrix = game.GetController.GetTransformMatrix;
 
 			spriteBatch.Begin(
 				SpriteSortMode.Deferred,

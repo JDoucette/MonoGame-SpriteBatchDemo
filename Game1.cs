@@ -46,6 +46,7 @@ namespace SpriteBatchDemo
 		public Art GetArt { get { return art; } }
 		public Tiles GetTiles { get { return tiles; } }
 		public Controller GetController { get { return controller; } }
+		public Render GetRender { get { return render; } }
 
 
 		// ---- data members
