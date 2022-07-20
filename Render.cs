@@ -166,16 +166,13 @@ namespace SpriteBatchDemo
 
 		public void Render_LowResGameScreen_to_BackBuffer()
 		{
-			// get controller info
-			SamplerState samplerState = game.GetController.GetSamplerState;
-
 			graphicsDevice.SetRenderTarget(null);
 			graphicsDevice.Clear(Color.CornflowerBlue);
 
 			spriteBatch.Begin(
 				SpriteSortMode.Deferred,
 				BlendState.AlphaBlend,
-				SamplerState.PointClamp  // do not use samplerState -- that's for the game screen render
+				SamplerState.PointClamp,  // do not use game.GetController.GetSamplerState -- that's for the game screen render
 				DepthStencilState.None,
 				RasterizerState.CullNone,
 				effect: null,
