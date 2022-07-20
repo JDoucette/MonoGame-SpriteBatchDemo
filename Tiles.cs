@@ -21,7 +21,6 @@ namespace SpriteBatchDemo
 		private Point sizeSpriteSheet_tiles = new Point(8, 8);  // size of the sprite sheet (a matrix of equal sized tiles), in tiles
 
 
-
 		// ---- struct
 
 		public struct Tile
@@ -32,7 +31,6 @@ namespace SpriteBatchDemo
 		}
 
 
-
 		// ---- properties
 
 		public Tile[] GetTilesSpriteSheet { get { return tilesSpriteSheet; } }
@@ -40,7 +38,6 @@ namespace SpriteBatchDemo
 		public Texture2D GetTextSpriteSheet { get { return textSpriteSheet; } }
 		public List<Texture2D> GetTextSpritesIndividual { get { return textSpritesIndividual; } }
 		public Point GetSizeTilePixels { get { return sizeTile_pixels; } }
-
 
 
 		// ---- data members
@@ -55,7 +52,6 @@ namespace SpriteBatchDemo
 		// tiles
 		private Tile[] tilesSpriteSheet;  // 1D array is fine, since we store the position within each tile
 		private Tile[] tilesIndividualSprites;  // 1D array is fine, since we store the position within each tile
-
 
 
 		// ---- methods
@@ -138,3 +134,4 @@ namespace SpriteBatchDemo
 
 	}  // public class Tiles
 }  // namespace SpriteBatchDemo
+

@@ -18,9 +18,6 @@
 //	2.	Allow keyboard control:  sample state, and spritesheet vs individual.  Show results in HUD.
 //	3.	Allow keyboard control:  zoom, rotate, and recenter
 
-#define SETTING_POINTCLAMP  // for SamplerState: if set, then PointClamp, else PointWrap
-#define USE_SPRITESHEET  // else, draw individual textures
-
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -36,12 +33,12 @@ namespace SpriteBatchDemo
 		// ---- constants
 
 		// resolution
+		private static Point sizeResScreen =
 #if DEBUG
-		private static Point sizeResScreen = new Point(1280, 720);
+			new Point(1280, 720);
 #else
-		private static Point sizeResScreen = new Point(1920, 1080);
+			new Point(1920, 1080);
 #endif
-
 
 
 		// ---- properties
@@ -49,7 +46,7 @@ namespace SpriteBatchDemo
 		public GraphicsDeviceManager GetGraphics { get { return graphics; } }
 		public Art GetArt { get { return art; } }
 		public Tiles GetTiles { get { return tiles; } }
-
+		public Controller GetController { get { return controller; } }
 
 
 		// ---- data members
@@ -58,10 +55,10 @@ namespace SpriteBatchDemo
 		private Art art;
 		private Tiles tiles;
 		private Render render;
+		private Controller controller;
 
 		// graphics
 		private readonly GraphicsDeviceManager graphics;
-
 
 
 		// ---- methods
@@ -97,6 +94,7 @@ namespace SpriteBatchDemo
 			art = new Art(GraphicsDevice);
 			tiles = new Tiles(this);
 			render = new Render(this, GraphicsDevice);
+			controller = new Controller(this);
 		}
 
 		private void Initialize_after_LoadedContent()
@@ -116,29 +114,13 @@ namespace SpriteBatchDemo
 
 		protected override void Update(GameTime gameTime)
 		{
-			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-				Keyboard.GetState().IsKeyDown(Keys.Escape))
-				Exit();
-
+			controller.Update(gameTime);
 			base.Update(gameTime);
 		}
 
 		protected override void Draw(GameTime gameTime)
 		{
-#if SETTING_POINTCLAMP
-			bool bPointClamp = true;
-#else
-			bool bPointClamp = false;
-#endif
-			render.SetSamplerState(bPointClamp);
-
-#if USE_SPRITESHEET
-		bool bSpriteSheet = true;
-#else
-			bool bSpriteSheet = false;
-#endif
-
-			render.Render_LowResGameScreen(gameTime, bSpriteSheet);
+			render.Render_LowResGameScreen(gameTime);
 			render.Render_LowResGameScreen_to_BackBuffer();
 			render.Render_Hud_SpriteSheet(tiles.GetTextSpriteSheet);
 			render.Render_Hud_IndividualSprites(tiles.GetSizeTilePixels);

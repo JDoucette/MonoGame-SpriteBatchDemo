@@ -19,7 +19,6 @@ namespace SpriteBatchDemo
 		private GraphicsDevice graphicsDevice;
 
 
-
 		// ---- methods
 
 		public Art(GraphicsDevice graphicsDevice)
@@ -131,3 +130,4 @@ namespace SpriteBatchDemo
 
 	}  // 	class Art
 }  // namespace SpriteBatchDemo
+

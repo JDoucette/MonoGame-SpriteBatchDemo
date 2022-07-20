@@ -16,10 +16,6 @@ namespace SpriteBatchDemo
 	{
 		// ---- constants
 
-		// speed
-		private readonly double zoomSpeed = 0.4534828;
-		private readonly double rotateSpeed = 0.0;  // 0.2746593;
-
 		// resolution
 		private const int scaleGame = 4;
 
@@ -28,16 +24,14 @@ namespace SpriteBatchDemo
 		private readonly StringBuilder str = new StringBuilder(256);
 
 
-
 		// ---- data members
 
 		// game
-		private Game1 game;
+		private readonly Game1 game;
 
 		// graphics
 		private GraphicsDevice graphicsDevice;
 		private readonly SpriteBatch spriteBatch;
-		private SamplerState samplerState = SamplerState.PointClamp;
 
 		// game screen
 		private readonly RenderTarget2D textLowResGame;
@@ -46,14 +40,9 @@ namespace SpriteBatchDemo
 		private Point sizeResGame;
 		private Point sizeResScreen;
 
-		// matrix transform
-		private float rotate;
-		private float zoom;
-
 		// hud
 		private Texture2D textWhite;
 		private Font font;
-
 
 
 		// ---- methods
@@ -93,8 +82,12 @@ namespace SpriteBatchDemo
 			font = new Font(content.Load<Texture2D>(@"Fonts\font-jason-7x8-fixed-double-bold"));
 		}
 
-		public void Render_LowResGameScreen(GameTime gameTime, bool bSpriteSheet)
+		public void Render_LowResGameScreen(GameTime gameTime)
 		{
+			// get controller info
+			SamplerState samplerState = game.GetController.GetSamplerState;
+			bool bSpriteSheet = game.GetController.GetUseSpriteSheet;
+
 			Tiles.Tile[] tilesToRender = bSpriteSheet ? 
 				game.GetTiles.GetTilesSpriteSheet : 
 				game.GetTiles.GetIndividualSprites;
@@ -108,11 +101,12 @@ namespace SpriteBatchDemo
 
 		private void Render_LowResGameScreen_Foreground(GameTime gameTime, Tiles.Tile [] tilesToRender)
 		{
-			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
+			// get controller info
+			SamplerState samplerState = game.GetController.GetSamplerState;
+			float zoom = game.GetController.GetZoom;
+			float rotate = game.GetController.GetRotate;
 
 			// exact copy of Kris Steele's transform matrix for PK, with changes to screen size & draw position:
-			rotate = (float)(timeTotal * rotateSpeed);
-			zoom = (float)(2.5 + 1.5 * Math.Sin(timeTotal * zoomSpeed));
 			Vector2 origin = new Vector2(sizeResGame.X * 0.5f, sizeResGame.Y * 0.5f);  // for rotation and zoom
 			Matrix transformMatrix =
 				Matrix.CreateTranslation(new Vector3(-origin, 0.0f)) *
@@ -136,22 +130,29 @@ namespace SpriteBatchDemo
 			spriteBatch.End();
 		}
 
-		internal void SetSamplerState(bool bPointClamp)
-		{
-			samplerState = bPointClamp
-				? SamplerState.PointClamp
-				: SamplerState.PointWrap;
-		}
-
 		private void Render_LowResGameScreen_Hud()
 		{
+			// get controller info
+			SamplerState samplerState = game.GetController.GetSamplerState;
+			bool bSpriteSheet = game.GetController.GetUseSpriteSheet;
+			float zoom = game.GetController.GetZoom;
+			float rotate = game.GetController.GetRotate;
+
 			spriteBatch.Begin();
 			{
 				Vector2 pos = new Vector2(1, 1);
 				font.Draw(spriteBatch, strTitle, pos, Color.CornflowerBlue);
 				pos.Y += font.FontHeight;
 
-				str.Clear().AppendFormat("  Zoom:{0,6:F3}", zoom);
+				str.Clear().AppendFormat("{0}", samplerState);
+				font.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
+				pos.Y += font.FontHeight;
+
+				str.Clear().AppendFormat("SpriteSheet: {0}", bSpriteSheet);
+				font.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
+				pos.Y += font.FontHeight;
+
+				str.Clear().AppendFormat("Zoom:{0,6:F3}", zoom);
 				font.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
 				pos.Y += font.FontHeight;
 
@@ -164,6 +165,9 @@ namespace SpriteBatchDemo
 
 		public void Render_LowResGameScreen_to_BackBuffer()
 		{
+			// get controller info
+			SamplerState samplerState = game.GetController.GetSamplerState;
+
 			graphicsDevice.SetRenderTarget(null);
 			graphicsDevice.Clear(Color.CornflowerBlue);
 
