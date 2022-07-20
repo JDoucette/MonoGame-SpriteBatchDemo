@@ -42,7 +42,8 @@ namespace SpriteBatchDemo
 
 		// hud
 		private Texture2D textWhite;
-		private Font font;
+		private Font fontMain;
+		private Font fontSmall;
 
 
 		// ---- methods
@@ -74,12 +75,12 @@ namespace SpriteBatchDemo
 			textWhite = game.GetArt.CreateWhiteTexture(8);
 
 			// lowercase
-			//font = new Font(content.Load<Texture2D>(@"Fonts\font-arcade-classic-7x7-jason-edit"));
-			//font = new Font(content.Load<Texture2D>(@"Fonts\font-arcade-classic-7x7-bold-smb2-jason-design"));
+			//fontSmall = new Font(content.Load<Texture2D>(@"Fonts\font-arcade-classic-7x7-jason-edit"));
+			//fontSmall = new Font(content.Load<Texture2D>(@"Fonts\font-arcade-classic-7x7-bold-smb2-jason-design"));
 
 			// uppercase only
-			//font = new Font(content.Load<Texture2D>(@"Fonts\font-jason-5x6-fixed"));
-			font = new Font(content.Load<Texture2D>(@"Fonts\font-jason-7x8-fixed-double-bold"));
+			fontSmall = new Font(content.Load<Texture2D>(@"Fonts\font-jason-5x6-fixed"));
+			fontMain = new Font(content.Load<Texture2D>(@"Fonts\font-jason-7x8-fixed-double-bold"));
 		}
 
 		public void Render_LowResGameScreen(GameTime gameTime)
@@ -141,24 +142,24 @@ namespace SpriteBatchDemo
 			spriteBatch.Begin();
 			{
 				Vector2 pos = new Vector2(1, 1);
-				font.Draw(spriteBatch, strTitle, pos, Color.CornflowerBlue);
-				pos.Y += font.FontHeight;
+				fontMain.Draw(spriteBatch, strTitle, pos, Color.CornflowerBlue);
+				pos.Y += fontMain.FontHeight;
 
 				str.Clear().AppendFormat("{0}", samplerState);
-				font.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
-				pos.Y += font.FontHeight;
+				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
+				pos.Y += fontSmall.FontHeight;
 
 				str.Clear().AppendFormat("SpriteSheet: {0}", bSpriteSheet);
-				font.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
-				pos.Y += font.FontHeight;
+				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
+				pos.Y += fontSmall.FontHeight;
 
 				str.Clear().AppendFormat("Zoom:{0,6:F3}", zoom);
-				font.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
-				pos.Y += font.FontHeight;
+				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
+				pos.Y += fontSmall.FontHeight;
 
 				str.Clear().AppendFormat("Rotate:{0,6:F3}", rotate);
-				font.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
-				pos.Y += font.FontHeight;
+				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
+				pos.Y += fontSmall.FontHeight;
 			}
 			spriteBatch.End();
 		}
