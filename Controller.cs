@@ -17,8 +17,17 @@ namespace SpriteBatchDemo
 		// ---- constants
 
 		// speed
-		private readonly double zoomSpeed = 0.4534828;
-		private readonly double rotateSpeed = 0.0;  // 0.2746593;
+		private readonly double autoZoomSpeed = 0.4534828;
+		private readonly double autoRotateSpeed = 0.2746593;
+
+		private List<SamplerState> samplerStates = new List<SamplerState>() {
+				SamplerState.AnisotropicClamp,
+				SamplerState.AnisotropicWrap,
+				SamplerState.LinearClamp,
+				SamplerState.LinearWrap,
+				SamplerState.PointClamp,
+				SamplerState.PointWrap
+			};
 
 
 		// ---- properties
@@ -40,12 +49,17 @@ namespace SpriteBatchDemo
 		private KeyboardState keyboardStateCurr;
 		private KeyboardState keyboardStatePrev;
 
-		// controls
+		// location
 		private Vector2 pos = new Vector2(0, 0);
 		private float zoom = 1.0f;
 		private float rotate = 0.0f;
-		private bool bUseSpriteSheet = true;
+
+		// controls
 		private SamplerState samplerState = SamplerState.PointClamp;
+		private bool bUseSpriteSheet = true;
+		private bool bAllowZoomControl = false;
+		private bool bAllowRotateControl = true;
+
 
 
 		// ---- methods
@@ -86,18 +100,16 @@ namespace SpriteBatchDemo
 
 			// auto rotate & zoom
 			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
-			rotate = (float)(timeTotal * rotateSpeed);
-			zoom = (float)(2.5 + 1.5 * Math.Sin(timeTotal * zoomSpeed));
-		}
+			if (bAllowZoomControl)
+				zoom = 1.0f;  // TODO -- allow user control here
+			else
+				zoom = (float)(2.5 + 1.5 * Math.Sin(timeTotal * autoZoomSpeed));
 
-		private List<SamplerState> samplerStates = new List<SamplerState>() {
-				SamplerState.AnisotropicClamp,
-				SamplerState.AnisotropicWrap,
-				SamplerState.LinearClamp,
-				SamplerState.LinearWrap,
-				SamplerState.PointClamp,
-				SamplerState.PointWrap
-			};
+			if (bAllowRotateControl)
+				rotate = 0.0f;  // TODO -- allow user control here
+			else
+				rotate = (float)(timeTotal * autoRotateSpeed);
+		}
 
 		private void ChangeSamplerState()
 		{
@@ -116,12 +128,12 @@ namespace SpriteBatchDemo
 
 		private void ChangeZoom()
 		{
-			throw new NotImplementedException();
+			bAllowZoomControl = !bAllowZoomControl;
 		}
 
 		private void ChangeRotate()
 		{
-			throw new NotImplementedException();
+			bAllowRotateControl = !bAllowRotateControl;
 		}
 
 	}  // public class Controller

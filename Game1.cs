@@ -15,8 +15,7 @@
 //
 // TODO:
 //	1.	Implement camera scrolling, through a level, to check for floating point precision issues as the magnitudes rise.
-//	2.	Allow keyboard control:  sample state, and spritesheet vs individual.  Show results in HUD.
-//	3.	Allow keyboard control:  zoom, rotate, and recenter
+//	2.	Allow keyboard control:  zoom, rotate, and recenter
 
 using System;
 using Microsoft.Xna.Framework;

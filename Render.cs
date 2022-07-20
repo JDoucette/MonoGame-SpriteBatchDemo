@@ -175,7 +175,7 @@ namespace SpriteBatchDemo
 			spriteBatch.Begin(
 				SpriteSortMode.Deferred,
 				BlendState.AlphaBlend,
-				samplerState,
+				SamplerState.PointClamp  // do not use samplerState -- that's for the game screen render
 				DepthStencilState.None,
 				RasterizerState.CullNone,
 				effect: null,
