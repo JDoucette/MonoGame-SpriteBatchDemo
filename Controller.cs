@@ -41,7 +41,7 @@ namespace SpriteBatchDemo
 			get {
 				Point sizeResGame = game.GetRender.GetSizeResGame;
 				// exact copy of Kris Steele's transform matrix for PK, with changes to screen size & draw position:
-				Vector2 origin = new Vector2(sizeResGame.X * 0.5f, sizeResGame.Y * 0.5f);  // for rotation and zoom
+				Vector2 origin = new Vector2(sizeResGame.X * 0.5f, sizeResGame.Y * 0.5f) + pos;  // for rotation and zoom
 				Matrix transformMatrix =
 					Matrix.CreateTranslation(new Vector3(-origin, 0.0f)) *
 					Matrix.CreateRotationZ(rotate) *
@@ -54,7 +54,7 @@ namespace SpriteBatchDemo
 
 		// ---- data members
 
-		private Game1 game;
+		private readonly Game1 game;
 
 		// input
 		private GamePadState gamePadStateCurr;
@@ -84,6 +84,9 @@ namespace SpriteBatchDemo
 
 		public void Update(GameTime gameTime)
 		{
+			// frame rate adjust
+			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
+
 			// get input
 			gamePadStatePrev = gamePadStateCurr;
 			gamePadStateCurr = GamePad.GetState(PlayerIndex.One);
@@ -103,6 +106,15 @@ namespace SpriteBatchDemo
 			buttonX |= keyboardStatePrev.IsKeyUp(Keys.X) && keyboardStateCurr.IsKeyDown(Keys.X);
 			buttonY |= keyboardStatePrev.IsKeyUp(Keys.Y) && keyboardStateCurr.IsKeyDown(Keys.Y);
 
+			Vector2 move = new Vector2();
+			move += gamePadStateCurr.ThumbSticks.Left;
+			move += gamePadStateCurr.ThumbSticks.Right;
+			move.X -= keyboardStateCurr.IsKeyDown(Keys.Left) ? -1 : 0;
+			move.X += keyboardStateCurr.IsKeyDown(Keys.Right) ? -1 : 0;
+			move.Y -= keyboardStateCurr.IsKeyDown(Keys.Up) ? -1 : 0;
+			move.Y += keyboardStateCurr.IsKeyDown(Keys.Down) ? -1 : 0;
+			pos += move;
+
 			// exit?
 			if (exit) game.Exit();
 
@@ -112,7 +124,6 @@ namespace SpriteBatchDemo
 			if (buttonY) ChangeRotate();
 
 			// auto rotate & zoom
-			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
 			if (bAllowZoomControl)
 				zoom = 1.0f;  // TODO -- allow user control here
 			else
