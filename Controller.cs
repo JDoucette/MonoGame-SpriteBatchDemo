@@ -86,6 +86,7 @@ namespace SpriteBatchDemo
 		public void Update(GameTime gameTime)
 		{
 			// frame rate adjust
+			double timeFrame = gameTime.ElapsedGameTime.TotalSeconds;
 			double timeTotal = gameTime.TotalGameTime.TotalSeconds;
 
 			// get input
@@ -94,7 +95,7 @@ namespace SpriteBatchDemo
 			keyboardStatePrev = keyboardStateCurr;
 			keyboardStateCurr = Keyboard.GetState();
 
-			// process input devices
+			// get data from gamepad and keyboard
 			bool exit = 
 				gamePadStateCurr.Buttons.Back == ButtonState.Pressed || 
 				keyboardStateCurr.IsKeyDown(Keys.Escape);
@@ -107,18 +108,26 @@ namespace SpriteBatchDemo
 			buttonX |= keyboardStatePrev.IsKeyUp(Keys.X) && keyboardStateCurr.IsKeyDown(Keys.X);
 			buttonY |= keyboardStatePrev.IsKeyUp(Keys.Y) && keyboardStateCurr.IsKeyDown(Keys.Y);
 
+			// move
 			Vector2 move = new Vector2();
+			// inverse Y for gamepads
 			move += gamePadStateCurr.ThumbSticks.Left;
 			move += gamePadStateCurr.ThumbSticks.Right;
-			move.X += keyboardStateCurr.IsKeyDown(Keys.Left) ? -1 : 0;
-			move.X += keyboardStateCurr.IsKeyDown(Keys.Right) ? +1 : 0;
-			move.Y += keyboardStateCurr.IsKeyDown(Keys.Up) ? -1 : 0;
-			move.Y += keyboardStateCurr.IsKeyDown(Keys.Down) ? +1 : 0;
+			move.Y = -move.Y;
 			move.X += gamePadStateCurr.DPad.Left == ButtonState.Pressed ? -1 : 0;
 			move.X += gamePadStateCurr.DPad.Right == ButtonState.Pressed ? +1 : 0;
 			move.Y += gamePadStateCurr.DPad.Up == ButtonState.Pressed ? -1 : 0;
 			move.Y += gamePadStateCurr.DPad.Down == ButtonState.Pressed ? +1 : 0;
-			pos += move;
+			move.X += keyboardStateCurr.IsKeyDown(Keys.Left) ? -1 : 0;
+			move.X += keyboardStateCurr.IsKeyDown(Keys.Right) ? +1 : 0;
+			move.Y += keyboardStateCurr.IsKeyDown(Keys.Up) ? -1 : 0;
+			move.Y += keyboardStateCurr.IsKeyDown(Keys.Down) ? +1 : 0;
+			pos += move / zoom * (float)timeFrame * 200.0f;
+
+			// zoom
+			float zoomMultiplyFactor = 1.0f;
+			zoomMultiplyFactor += (gamePadStateCurr.Triggers.Right - gamePadStateCurr.Triggers.Left) * 2.0f * (float)timeFrame;
+			//zoomMultiplyFactor += -- TODO - add keyboard control
 
 			// exit?
 			if (exit) game.Exit();
@@ -130,7 +139,7 @@ namespace SpriteBatchDemo
 
 			// auto rotate & zoom
 			if (bAllowZoomControl)
-				zoom = 1.0f;  // TODO -- allow user control here
+				zoom *= zoomMultiplyFactor;
 			else
 				zoom = (float)(2.0 + Math.Sin(timeTotal * autoZoomSpeed));
 
