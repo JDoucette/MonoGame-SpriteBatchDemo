@@ -46,7 +46,8 @@ namespace SpriteBatchDemo
 					Matrix.CreateTranslation(new Vector3(-origin, 0.0f)) *
 					Matrix.CreateRotationZ(rotate) *
 					Matrix.CreateScale(zoom) *
-					Matrix.CreateTranslation(new Vector3(origin, 0.0f));
+					Matrix.CreateTranslation(new Vector3(origin, 0.0f)) *
+					Matrix.CreateTranslation(new Vector3(-pos, 0.0f));
 				return transformMatrix;
 			}
 		}
@@ -109,10 +110,14 @@ namespace SpriteBatchDemo
 			Vector2 move = new Vector2();
 			move += gamePadStateCurr.ThumbSticks.Left;
 			move += gamePadStateCurr.ThumbSticks.Right;
-			move.X -= keyboardStateCurr.IsKeyDown(Keys.Left) ? -1 : 0;
-			move.X += keyboardStateCurr.IsKeyDown(Keys.Right) ? -1 : 0;
-			move.Y -= keyboardStateCurr.IsKeyDown(Keys.Up) ? -1 : 0;
-			move.Y += keyboardStateCurr.IsKeyDown(Keys.Down) ? -1 : 0;
+			move.X += keyboardStateCurr.IsKeyDown(Keys.Left) ? -1 : 0;
+			move.X += keyboardStateCurr.IsKeyDown(Keys.Right) ? +1 : 0;
+			move.Y += keyboardStateCurr.IsKeyDown(Keys.Up) ? -1 : 0;
+			move.Y += keyboardStateCurr.IsKeyDown(Keys.Down) ? +1 : 0;
+			move.X += gamePadStateCurr.DPad.Left == ButtonState.Pressed ? -1 : 0;
+			move.X += gamePadStateCurr.DPad.Right == ButtonState.Pressed ? +1 : 0;
+			move.Y += gamePadStateCurr.DPad.Up == ButtonState.Pressed ? -1 : 0;
+			move.Y += gamePadStateCurr.DPad.Down == ButtonState.Pressed ? +1 : 0;
 			pos += move;
 
 			// exit?
