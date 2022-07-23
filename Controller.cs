@@ -17,8 +17,8 @@ namespace SpriteBatchDemo
 		// ---- constants
 
 		// speed
-		private readonly double autoZoomSpeed = 0.4534828;
-		private readonly double autoRotateSpeed = 0.2746593;
+		private readonly double autoZoomSpeed = 0.6532014;
+		private readonly double autoRotateSpeed = 0.3274659;
 
 		private List<SamplerState> samplerStates = new List<SamplerState>() {
 				SamplerState.AnisotropicClamp,
@@ -132,7 +132,7 @@ namespace SpriteBatchDemo
 			if (bAllowZoomControl)
 				zoom = 1.0f;  // TODO -- allow user control here
 			else
-				zoom = (float)(2.5 + 1.5 * Math.Sin(timeTotal * autoZoomSpeed));
+				zoom = (float)(2.0 + Math.Sin(timeTotal * autoZoomSpeed));
 
 			if (bAllowRotateControl)
 				rotate = 0.0f;  // TODO -- allow user control here
