@@ -99,14 +99,16 @@ namespace SpriteBatchDemo
 			bool exit = 
 				gamePadStateCurr.Buttons.Back == ButtonState.Pressed || 
 				keyboardStateCurr.IsKeyDown(Keys.Escape);
-			bool buttonA = gamePadStatePrev.Buttons.A == ButtonState.Released && gamePadStateCurr.Buttons.A == ButtonState.Pressed;
-			bool buttonB = gamePadStatePrev.Buttons.B == ButtonState.Released && gamePadStateCurr.Buttons.B == ButtonState.Pressed;
-			bool buttonX = gamePadStatePrev.Buttons.X == ButtonState.Released && gamePadStateCurr.Buttons.X == ButtonState.Pressed;
-			bool buttonY = gamePadStatePrev.Buttons.Y == ButtonState.Released && gamePadStateCurr.Buttons.Y == ButtonState.Pressed;
-			buttonA |= keyboardStatePrev.IsKeyUp(Keys.A) && keyboardStateCurr.IsKeyDown(Keys.A);
-			buttonB |= keyboardStatePrev.IsKeyUp(Keys.B) && keyboardStateCurr.IsKeyDown(Keys.B);
-			buttonX |= keyboardStatePrev.IsKeyUp(Keys.X) && keyboardStateCurr.IsKeyDown(Keys.X);
-			buttonY |= keyboardStatePrev.IsKeyUp(Keys.Y) && keyboardStateCurr.IsKeyDown(Keys.Y);
+			bool buttonA_samplerState = gamePadStatePrev.Buttons.A == ButtonState.Released && gamePadStateCurr.Buttons.A == ButtonState.Pressed;
+			bool buttonB_spriteSheet = gamePadStatePrev.Buttons.B == ButtonState.Released && gamePadStateCurr.Buttons.B == ButtonState.Pressed;
+			bool buttonX_autoZoom = gamePadStatePrev.Buttons.X == ButtonState.Released && gamePadStateCurr.Buttons.X == ButtonState.Pressed;
+			bool buttonY_autoRotate = gamePadStatePrev.Buttons.Y == ButtonState.Released && gamePadStateCurr.Buttons.Y == ButtonState.Pressed;
+			buttonA_samplerState |= keyboardStatePrev.IsKeyUp(Keys.A) && keyboardStateCurr.IsKeyDown(Keys.A);
+			buttonB_spriteSheet |= keyboardStatePrev.IsKeyUp(Keys.B) && keyboardStateCurr.IsKeyDown(Keys.B);
+			buttonX_autoZoom |= keyboardStatePrev.IsKeyUp(Keys.X) && keyboardStateCurr.IsKeyDown(Keys.X);
+			buttonX_autoZoom |= keyboardStatePrev.IsKeyUp(Keys.Z) && keyboardStateCurr.IsKeyDown(Keys.Z);
+			buttonY_autoRotate |= keyboardStatePrev.IsKeyUp(Keys.Y) && keyboardStateCurr.IsKeyDown(Keys.Y);
+			buttonY_autoRotate |= keyboardStatePrev.IsKeyUp(Keys.R) && keyboardStateCurr.IsKeyDown(Keys.R);
 			bool zoomIn = keyboardStateCurr.IsKeyDown(Keys.OemPlus) || keyboardStateCurr.IsKeyDown(Keys.Add);
 			bool zoomOut = keyboardStateCurr.IsKeyDown(Keys.OemMinus) || keyboardStateCurr.IsKeyDown(Keys.Subtract);
 
@@ -135,10 +137,10 @@ namespace SpriteBatchDemo
 			// exit?
 			if (exit) game.Exit();
 
-			if (buttonA) ChangeSamplerState();
-			if (buttonB) ChangeSpriteSheet();
-			if (buttonX) ChangeZoom();
-			if (buttonY) ChangeRotate();
+			if (buttonA_samplerState) ChangeSamplerState();
+			if (buttonB_spriteSheet) ChangeSpriteSheet();
+			if (buttonX_autoZoom) ChangeZoom();
+			if (buttonY_autoRotate) ChangeRotate();
 
 			// auto rotate & zoom
 			if (bAllowZoomControl)
