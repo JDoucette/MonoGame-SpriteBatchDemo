@@ -107,6 +107,8 @@ namespace SpriteBatchDemo
 			buttonB |= keyboardStatePrev.IsKeyUp(Keys.B) && keyboardStateCurr.IsKeyDown(Keys.B);
 			buttonX |= keyboardStatePrev.IsKeyUp(Keys.X) && keyboardStateCurr.IsKeyDown(Keys.X);
 			buttonY |= keyboardStatePrev.IsKeyUp(Keys.Y) && keyboardStateCurr.IsKeyDown(Keys.Y);
+			bool zoomIn = keyboardStateCurr.IsKeyDown(Keys.OemPlus) || keyboardStateCurr.IsKeyDown(Keys.Add);
+			bool zoomOut = keyboardStateCurr.IsKeyDown(Keys.OemMinus) || keyboardStateCurr.IsKeyDown(Keys.Subtract);
 
 			// move
 			Vector2 move = new Vector2();
@@ -126,8 +128,9 @@ namespace SpriteBatchDemo
 
 			// zoom
 			float zoomMultiplyFactor = 1.0f;
-			zoomMultiplyFactor += (gamePadStateCurr.Triggers.Right - gamePadStateCurr.Triggers.Left) * 2.0f * (float)timeFrame;
-			//zoomMultiplyFactor += -- TODO - add keyboard control
+			float zoomInput = gamePadStateCurr.Triggers.Right - gamePadStateCurr.Triggers.Left
+				+ (zoomIn ? +1 : 0) + (zoomOut ? -1 : 0);
+			zoomMultiplyFactor += zoomInput * 2.0f * (float)timeFrame;
 
 			// exit?
 			if (exit) game.Exit();
