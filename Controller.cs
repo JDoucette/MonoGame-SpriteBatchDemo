@@ -111,6 +111,8 @@ namespace SpriteBatchDemo
 			buttonY_autoRotate |= keyboardStatePrev.IsKeyUp(Keys.R) && keyboardStateCurr.IsKeyDown(Keys.R);
 			bool zoomIn = keyboardStateCurr.IsKeyDown(Keys.OemPlus) || keyboardStateCurr.IsKeyDown(Keys.Add);
 			bool zoomOut = keyboardStateCurr.IsKeyDown(Keys.OemMinus) || keyboardStateCurr.IsKeyDown(Keys.Subtract);
+			bool rotateLeft = keyboardStateCurr.IsKeyDown(Keys.OemOpenBrackets) || keyboardStateCurr.IsKeyDown(Keys.OemComma);
+			bool rotateRight = keyboardStateCurr.IsKeyDown(Keys.OemCloseBrackets) || keyboardStateCurr.IsKeyDown(Keys.OemPeriod);
 
 			// move
 			Vector2 move = new Vector2();
@@ -134,6 +136,10 @@ namespace SpriteBatchDemo
 				+ (zoomIn ? +1 : 0) + (zoomOut ? -1 : 0);
 			zoomMultiplyFactor += zoomInput * 2.0f * (float)timeFrame;
 
+			// rotate
+			float rotateAdditionFactor = 0.0f;
+			rotateAdditionFactor += ((rotateLeft ? -1 : 0) + (rotateRight ? +1 : 0)) * (float)timeFrame;
+
 			// exit?
 			if (exit) game.Exit();
 
@@ -149,7 +155,7 @@ namespace SpriteBatchDemo
 				zoom = (float)(2.0 + Math.Sin(timeTotal * autoZoomSpeed));
 
 			if (bAllowRotateControl)
-				rotate = 0.0f;  // TODO -- allow user control here
+				rotate += rotateAdditionFactor;
 			else
 				rotate = (float)(timeTotal * autoRotateSpeed);
 		}

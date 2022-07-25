@@ -152,11 +152,11 @@ namespace SpriteBatchDemo
 				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
 				pos.Y += fontSmall.FontHeight;
 
-				str.Clear().AppendFormat("[X] Zoom:{0,6:F3}", zoom);
+				str.Clear().AppendFormat("[X/Z] Zoom:{0,6:F3}", zoom);
 				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
 				pos.Y += fontSmall.FontHeight;
 
-				str.Clear().AppendFormat("[Y] Rotate:{0,6:F3}", rotate);
+				str.Clear().AppendFormat("[Y/R] Rotate:{0,6:F3}", rotate);
 				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
 				pos.Y += fontSmall.FontHeight;
 			}
