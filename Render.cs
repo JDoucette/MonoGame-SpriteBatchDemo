@@ -159,6 +159,10 @@ namespace SpriteBatchDemo
 				str.Clear().AppendFormat("[Y/R] Rotate:{0,6:F3}", rotate);
 				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
 				pos.Y += fontSmall.FontHeight;
+
+				str.Clear().Append("[Space] Reset");
+				fontSmall.Draw(spriteBatch, str, pos, Color.LightSkyBlue);
+				pos.Y += fontSmall.FontHeight;
 			}
 			spriteBatch.End();
 		}

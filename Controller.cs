@@ -113,6 +113,7 @@ namespace SpriteBatchDemo
 			bool zoomOut = keyboardStateCurr.IsKeyDown(Keys.OemMinus) || keyboardStateCurr.IsKeyDown(Keys.Subtract);
 			bool rotateLeft = keyboardStateCurr.IsKeyDown(Keys.OemOpenBrackets) || keyboardStateCurr.IsKeyDown(Keys.OemComma);
 			bool rotateRight = keyboardStateCurr.IsKeyDown(Keys.OemCloseBrackets) || keyboardStateCurr.IsKeyDown(Keys.OemPeriod);
+			bool reset = keyboardStateCurr.IsKeyDown(Keys.Space);
 
 			// move
 			Vector2 move = new Vector2();
@@ -139,6 +140,12 @@ namespace SpriteBatchDemo
 			// rotate
 			float rotateAdditionFactor = 0.0f;
 			rotateAdditionFactor += ((rotateLeft ? -1 : 0) + (rotateRight ? +1 : 0)) * (float)timeFrame;
+
+			if (reset)
+			{
+				rotate = 0.0f;
+				zoom = 1.0f;
+			}
 
 			// exit?
 			if (exit) game.Exit();
