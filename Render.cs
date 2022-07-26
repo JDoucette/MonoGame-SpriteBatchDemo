@@ -17,7 +17,7 @@ namespace SpriteBatchDemo
 		// ---- constants
 
 		// resolution
-		private const int scaleGame = 4;
+		public const int scaleGame = 4;
 
 		// hud
 		private readonly StringBuilder strTitle = new StringBuilder("SpriteBatch Demo");
@@ -109,9 +109,6 @@ namespace SpriteBatchDemo
 		{
 			// get controller info
 			SamplerState samplerState = game.GetController.GetSamplerState;
-			float zoom = game.GetController.GetZoom;
-			float rotate = game.GetController.GetRotate;
-
 			Matrix transformMatrix = game.GetController.GetTransformMatrix;
 
 			spriteBatch.Begin(

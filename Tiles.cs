@@ -76,10 +76,7 @@ namespace SpriteBatchDemo
 		{
 			// determine number of tiles that can fit on the screen
 			// (yes, we're rounding down, but no biggie)
-			Point sizeResGame = new Point(
-				game.GetGraphics.PreferredBackBufferWidth,
-				game.GetGraphics.PreferredBackBufferHeight);
-
+			Point sizeResGame = game.GetRender.GetSizeResGame;
 			Point sizeSpriteArray = new Point(
 				sizeResGame.X / sizeTile_pixels.X,
 				sizeResGame.Y / sizeTile_pixels.Y);

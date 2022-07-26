@@ -12,10 +12,6 @@
 // However, the texel access out-of-bounds range is for the texture, not the sub-texture within the sprite sheet.
 // This means floating point inaccuracies that occur with the zoom factor is non-integer dips into out-of-range pixels.
 // In our case, our tile sprite sheet has no borders, so out-of-bounds texel access is accessing am adjacent tile.
-//
-// TODO:
-//	1.	Implement camera scrolling, through a level, to check for floating point precision issues as the magnitudes rise.
-//	2.	Allow keyboard control:  zoom, rotate, and recenter
 
 using System;
 using Microsoft.Xna.Framework;
