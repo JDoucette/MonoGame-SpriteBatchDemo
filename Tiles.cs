@@ -19,6 +19,8 @@ namespace SpriteBatchDemo
 		// sprites
 		private Point sizeTile_pixels = new Point(16, 16);  // size of each tile, in pixels
 		private Point sizeSpriteSheet_tiles = new Point(8, 8);  // size of the sprite sheet (a matrix of equal sized tiles), in tiles
+																// level size
+		private Point numScreensLevelSize = new Point(32, 2);  // number of screens the level length & height are
 
 
 		// ---- struct
@@ -78,8 +80,8 @@ namespace SpriteBatchDemo
 			// (yes, we're rounding down, but no biggie)
 			Point sizeResGame = game.GetRender.GetSizeResGame;
 			Point sizeSpriteArray = new Point(
-				sizeResGame.X / sizeTile_pixels.X,
-				sizeResGame.Y / sizeTile_pixels.Y);
+				sizeResGame.X * numScreensLevelSize.X / sizeTile_pixels.X,
+				sizeResGame.Y * numScreensLevelSize.Y / sizeTile_pixels.Y);
 			int numTiles = sizeSpriteArray.X * sizeSpriteArray.Y;
 			tilesSpriteSheet = new Tile[numTiles];
 			tilesIndividualSprites = new Tile[numTiles];
