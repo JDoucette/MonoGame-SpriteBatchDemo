@@ -19,7 +19,6 @@ namespace SpriteBatchDemo
 		// sprites
 		private Point sizeTile_pixels = new Point(16, 16);  // size of each tile, in pixels
 		private Point sizeSpriteSheet_tiles = new Point(8, 8);  // size of the sprite sheet (a matrix of equal sized tiles), in tiles
-																// level size
 		private Point numScreensLevelSize = new Point(32, 2);  // number of screens the level length & height are
 
 
